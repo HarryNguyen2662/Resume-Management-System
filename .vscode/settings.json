@@ -1,0 +1,27 @@
+{
+    "files.exclude": {
+      ".husky": true,
+      "node_modules": true,
+      "bin": true
+    },
+    "files.eol": "\n",
+    "editor.tabSize": 2,
+    "editor.renderWhitespace": "selection",
+    "editor.formatOnSave": true,
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+  }
+  
