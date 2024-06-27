@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://localhost:3001' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
     getResumes: builder.query<Resume[], void>({
