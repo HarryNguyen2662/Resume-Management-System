@@ -16,7 +16,7 @@ const getResumeAll = catchAsync(async (req, res) => {
 const getResumeById = catchAsync(async (req, res) => {
   const resume = await resumeService.getResumeById(req.params.resumeId);
   if (!resume) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Resume not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Invalid ID');
   }
   res.send(resume);
 });
@@ -27,8 +27,9 @@ const deleteResume = catchAsync(async (req, res) => {
 });
 
 const getResumeByPage = catchAsync(async (req, res) => {
-  const resumes = await resumeService.getResumeByPage(req.query.page, req.query.limit);
-  res.send(resumes);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await resumeService.getResumeListbyPage(options);
+  res.send(result);
 });
 
 module.exports = {
