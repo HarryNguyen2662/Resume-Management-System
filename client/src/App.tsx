@@ -1,8 +1,11 @@
+import { AppProvider } from './providers/app';
+import { AppRoutes } from './routes';
+
 const App = () => {
   return (
-    <div>
-      <p>Hello</p>
-    </div>
+    <AppProvider>
+      <AppRoutes />
+    </AppProvider>
   );
 };
 
