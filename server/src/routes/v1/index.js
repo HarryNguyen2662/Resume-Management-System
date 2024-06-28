@@ -2,6 +2,7 @@ const express = require('express');
 // const authRoute = require('./auth.route');
 // const userRoute = require('./user.route');
 const resumeRoute = require('./resume.route');
+const resumePDFRoute = require('./resumePDF.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -21,6 +22,11 @@ const defaultRoutes = [
   {
     path: '/resume',
     route: resumeRoute,
+  },
+
+  {
+    path: '/resumePDF',
+    route: resumePDFRoute,
   },
 ];
 

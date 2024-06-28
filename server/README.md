@@ -21,9 +21,10 @@ To get started with the Resume Management API, clone the repository and install 
 
 #### Create a Resume
 
-- **URL**: `/api/resumes/`
+- **URL**: `/v1/resume/`
 - **Method**: `POST`
 - **Body**:
+
   ```json
   {
     "personalInfo": {
@@ -34,43 +35,119 @@ To get started with the Resume Management API, clone the repository and install 
       "linkedIn": "linkedin.com/in/johndoe",
       "website": "johndoe.com"
     },
-    "education": [...],
-    "experience": [...],
-    "projects": [...],
-    "skills": [...]
+    "education": [
+      {
+        "school": "School Name",
+        "degree": "Degree Obtained",
+        "date": "Graduation Date",
+        "gpa": "GPA",
+        "descriptions": ["Description 1", "Description 2"]
+      }
+    ],
+    "experience": [
+      {
+        "company": "Company Name",
+        "date": "Employment Date",
+        "jobTitle": "Job Title",
+        "descriptions": ["Description 1", "Description 2"]
+      }
+    ],
+    "projects": [
+      {
+        "date": "Project Date",
+        "descriptions": ["Description 1", "Description 2"],
+        "project": ["Project Name"]
+      }
+    ],
+    "skills": [
+      {
+        "descriptions": ["Skill 1", "Skill 2"]
+      }
+    ],
+    "custom": [
+      {
+        "descriptions": ["Custom Section Description 1", "Custom Section Description 2"]
+      }
+    ]
   }
   ```
+
 - **Success Response**: HTTP 201 (Created)
 
 #### Get All Resumes
 
-- **URL**: `/api/resumes/`
+- **URL**: `/v1/resume/`
 - **Method**: `GET`
 - **Success Response**: HTTP 200 (OK)
 
 #### Get Resume by ID
 
-- **URL**: `/api/resumes/:resumeId`
+- **URL**: `/v1/resume/:resumeId`
 - **Method**: `GET`
 - **Success Response**: HTTP 200 (OK)
 
 #### Delete Resume by ID
 
-- **URL**: `/api/resumes/:resumeId`
+- **URL**: `/v1/resume/:resumeId`
 - **Method**: `DELETE`
 - **Success Response**: HTTP 204 (No Content)
 
 #### Get Resumes by Page
 
-- **URL**: `/api/resumes/resumepage/:page/:limit`
+- **URL**: `/v1/resume/resumepage`
 - **Method**: `GET`
+- **Query Parameters**:
+  - `sortBy`: Field to sort by.
+  - `limit`: Number of items per page.
+  - `page`: Page number.
 - **Success Response**: HTTP 200 (OK)
+
+### ResumePDF
+
+#### Upload a Resume PDF
+
+- **URL**: `/v1/resumePDF/upload`
+- **Method**: `POST`
+- **Body**: Form-data with key `pdf` and the PDF file as the value.
+- **Success Response**: HTTP 200 (OK) with details of the uploaded file.
+
+#### List All Resume PDFs
+
+- **URL**: `/v1/resumePDF/files`
+- **Method**: `GET`
+- **Success Response**: HTTP 200 (OK) with a list of all uploaded PDF files.
+
+#### Get a Resume PDF by ID
+
+- **URL**: `/v1/resumePDF/file/:id`
+- **Method**: `GET`
+- **Success Response**: HTTP 200 (OK) with the requested PDF file content.
+
+#### Delete a Resume PDF by ID
+
+- **URL**: `/v1/resumePDF/file/:id`
+- **Method**: `DELETE`
+- **Success Response**: HTTP 204 (No Content) after successfully deleting the PDF file.
+
+#### Get Resume PDFs by Page
+
+- **URL**: `/v1/resumePDF/filepage`
+- **Method**: `GET`
+- **Query Parameters**:
+  - `sortBy`: Field to sort by.
+  - `limit`: Number of items per page.
+  - `page`: Page number.
+- **Success Response**: HTTP 200 (OK) with a paginated list of PDF files.
 
 ## Models
 
 ### Resume Model
 
 The Resume model defines the structure of the resume data, including personal information, education, experience, projects, and skills.
+
+### ResumePDF Model
+
+The ResumePDF model defines the structure of the resume .pdf file.
 
 ## Services
 
