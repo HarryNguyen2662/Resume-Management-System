@@ -3,7 +3,6 @@
 const httpStatus = require('http-status');
 const { Resume } = require('../models');
 const ApiError = require('../utils/ApiError');
-const http = require('node:https');
 
 /**
  * Create or update a resume
@@ -35,9 +34,9 @@ const getResumeAll = async () => {
  * @returns {Promise<Resume>}
  */
 const getResumeById = async (resumeId) => {
-  const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findOne({ resume: resumeId });
   if (!resume) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Can not get resume because of invalid id');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Resume not found');
   }
   return resume;
 };
@@ -48,9 +47,9 @@ const getResumeById = async (resumeId) => {
  * @returns {Promise<Resume>}
  */
 const deleteResumeById = async (resumeId) => {
-  const resume = await Resume.findByIdAndDelete(resumeId);
+  const resume = await Resume.findOneAndDelete({ user: resumeId });
   if (!resume) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Can not delete resume because of invalid id');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Resume not found');
   }
   return resume;
 };
@@ -61,20 +60,11 @@ const deleteResumeById = async (resumeId) => {
  * @param {number} limit
  * @returns {Promise<Resume>}
  */
-const getResumeListbyPage = async (options) => {
-  page = Number.parseInt(options.page);
-  limit = Number.parseInt(options.limit);
-  const totalCount = await Resume.countDocuments({});
-  const totalPages = Math.ceil(totalCount / limit);
-  const skip = (page - 1) * limit;
-
-  const resume = await Resume.find({}).skip(skip).limit(limit).exec();
-  return {
-    files,
-    currentPage: page,
-    totalPages,
-    totalCount,
-  };
+const getResumeListbyPage = async (page, limit) => {
+  const resume = await Resume.find()
+    .limit(limit)
+    .skip(limit * page);
+  return resume;
 };
 
 module.exports = {
