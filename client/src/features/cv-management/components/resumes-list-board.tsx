@@ -1,8 +1,5 @@
-import type { Resume } from '@/interface/resume';
-
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button'
 import {
   Pagination,
   PaginationContent,
@@ -14,9 +11,7 @@ import {
 } from '@/components/ui/pagination';
 import { useGetResumesQuery } from '@/services/apiSlice';
 
-interface ResumePreviewCardProps {
-  resume: Resume;
-}
+import { ResumePreviewCard } from './resume-preview-card';
 
 interface PaginationSelectionProps {
   total: number;
@@ -24,18 +19,6 @@ interface PaginationSelectionProps {
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
-
-export const ResumePreviewCard = ({ resume }: ResumePreviewCardProps) => {
-  return (
-    <div className="flex flex-col gap-5 border-solid border-2 h-fit border-neutral-400 rounded-md p-4">
-      <div className="flex flex-col gap-2">
-        <p className="font-bold text-xl">{resume.name + ' ' + resume.id}</p>
-        <p className=''>Uploaded: {resume.uploaded}</p>
-      </div>
-      <Button className='w-1/3 ml-auto'>Delete</Button>
-    </div>
-  );
-};
 
 const PaginationSelection = ({ total, itemsPerPage, currentPage, setCurrentPage }: PaginationSelectionProps) => {
   const pageNumbers = [];
@@ -114,7 +97,7 @@ export const ResumesListBoard = () => {
   const { data: resumes, isError, error, isLoading, isSuccess } = useGetResumesQuery();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7);
+  const [itemsPerPage] = useState(9);
 
   let content;
 
