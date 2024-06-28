@@ -62,6 +62,8 @@ export const AddNewResume = () => {
   const sections = groupLinesIntoSections(lines);
   const resume = extractResumeFromSections(sections);
 
+  console.log(resume);
+
   useEffect(() => {
     async function test() {
       const textItems = await readPdf(fileUrl);
