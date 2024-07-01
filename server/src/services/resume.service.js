@@ -7,17 +7,11 @@ const http = require('node:https');
 
 /**
  * Create or update a resume
- * @param {ObjectId} resumeId
- * @param {Object} resumeData
+ * @param {ObjectId} resumeBody
  * @returns {Promise<Resume>}
  */
-const createResume = async (resumeId, resumeData) => {
-  const existingResume = await Resume.findOne({ resume: resumeId });
-  if (existingResume) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Resume already exists');
-  }
-  const resume = await Resume.create(resumeData);
-  return resume;
+const createResume = async (resumeBody) => {
+  return Resume.create(resumeBody);
 };
 
 /**

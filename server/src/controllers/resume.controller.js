@@ -4,7 +4,7 @@ const ApiError = require('../utils/ApiError');
 const { resumeService } = require('../services');
 
 const createResume = catchAsync(async (req, res) => {
-  const resume = await resumeService.createResume(req.body.resumeId, req.body);
+  const resume = await resumeService.createResume(req.body);
   res.status(httpStatus.CREATED).send(resume);
 });
 
