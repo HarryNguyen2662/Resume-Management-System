@@ -27,24 +27,24 @@ To get started with the Resume Management API, clone the repository and install 
 
   ```json
   {
-    "personalInfo": {
-      "name": "John Doe",
+    "profile": {
       "email": "john.doe@example.com",
+      "location": "123 Main St",
+      "name": "John Doe",
       "phone": "1234567890",
-      "address": "123 Main St",
-      "linkedIn": "linkedin.com/in/johndoe",
-      "website": "johndoe.com"
+      "summary": "An experienced software developer...",
+      "url": "johndoe.com"
     },
-    "education": [
+    "educations": [
       {
         "school": "School Name",
         "degree": "Degree Obtained",
         "date": "Graduation Date",
-        "gpa": "GPA",
+        "gpa": "3.8",
         "descriptions": ["Description 1", "Description 2"]
       }
     ],
-    "experience": [
+    "workExperiences": [
       {
         "company": "Company Name",
         "date": "Employment Date",
