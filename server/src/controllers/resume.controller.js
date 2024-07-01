@@ -5,6 +5,8 @@ const { resumeService } = require('../services');
 
 const createResume = catchAsync(async (req, res) => {
   try {
+    console.log("hello");
+    console.log(req);
     result = await resumeService.createResume(req);
     res.status(httpStatus.CREATED).send({
       message: 'File and data received.',

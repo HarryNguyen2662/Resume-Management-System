@@ -1,11 +1,12 @@
 import type { TextItems } from '../lib/parse-resume-from-pdf/types';
 
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useUploadNewResumeMutation } from '@/services/apiSlice';
 
 import { extractResumeFromSections } from '../lib/parse-resume-from-pdf/extract-resume-from-sections';
 import { groupLinesIntoSections } from '../lib/parse-resume-from-pdf/group-lines-into-sections';
@@ -19,10 +20,11 @@ const defaultFileState = {
 };
 
 interface ResumeInputZoneProps {
+  setPdf: React.Dispatch<React.SetStateAction<File | null>>;
   onFileUrlChange: (fileUrl: string) => void;
 }
 
-const ResumeInputZone = ({ onFileUrlChange }: ResumeInputZoneProps) => {
+const ResumeInputZone = ({ onFileUrlChange, setPdf }: ResumeInputZoneProps) => {
   const [file, setFile] = useState(defaultFileState);
 
   const setNewFile = (newFile: File) => {
@@ -33,6 +35,7 @@ const ResumeInputZone = ({ onFileUrlChange }: ResumeInputZoneProps) => {
     const { name, size } = newFile;
     const fileUrl = URL.createObjectURL(newFile);
 
+    setPdf(newFile);
     setFile({ name, size, fileUrl });
     onFileUrlChange(fileUrl);
   };
@@ -57,12 +60,12 @@ const ResumeInputZone = ({ onFileUrlChange }: ResumeInputZoneProps) => {
 
 export const AddNewResume = () => {
   const [fileUrl, setFileUrl] = useState('');
+  const [pdf, setPdf] = useState<File | null>(null);
   const [textItems, setTextItems] = useState<TextItems>([]);
+  const [uploadFile, { isLoading }] = useUploadNewResumeMutation();
   const lines = groupTextItemsIntoLines(textItems || []);
   const sections = groupLinesIntoSections(lines);
-  const resume = extractResumeFromSections(sections);
-
-  console.log(resume);
+  const jsonData = extractResumeFromSections(sections);
 
   useEffect(() => {
     async function test() {
@@ -74,6 +77,20 @@ export const AddNewResume = () => {
     test();
   }, [fileUrl]);
 
+  const canSave = [pdf, jsonData].every(Boolean) && !isLoading;
+
+  const handleUpload = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (canSave && pdf && jsonData) {
+      try {
+        await uploadFile({ pdf, jsonData }).unwrap();
+      } catch (err) {
+        console.error('Failed to upload the file:', err);
+      }
+    }
+  };
+
   return (
     <div className="flex justify-center">
       <Dialog>
@@ -84,9 +101,9 @@ export const AddNewResume = () => {
           <DialogHeader>
             <DialogTitle>Upload new resume</DialogTitle>
           </DialogHeader>
-          <ResumeInputZone onFileUrlChange={fileUrl => setFileUrl(fileUrl)} />
+          <ResumeInputZone setPdf={setPdf} onFileUrlChange={fileUrl => setFileUrl(fileUrl)} />
           <DialogFooter>
-            <Button type="submit">Save</Button>
+            <Button onClick={handleUpload}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
