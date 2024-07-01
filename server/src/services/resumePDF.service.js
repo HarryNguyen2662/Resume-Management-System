@@ -4,14 +4,14 @@ const ApiError = require('../utils/ApiError');
 
 // service to upload a pdf file
 const UploadResumePDF = async (pdfFile) => {
-  const { originalname, buffer, mimetype } = pdfFile;
-  const file = new ResumePDF({
-    name: originalname,
-    data: buffer,
-    contentType: mimetype,
-  });
-  await file.save();
-  return file;
+  // const { originalname, buffer, mimetype } = pdfFile;
+  // const file = new ResumePDF({
+  //   name: originalname,
+  //   data: buffer,
+  //   contentType: mimetype,
+  // });
+  // await file.save();
+  // return file;
 };
 
 // service to display a list of uploaded files
