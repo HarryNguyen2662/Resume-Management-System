@@ -4,11 +4,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
     getResumes: builder.query<Resume[], void>({
-      query: () => '/resumes',
+      query: () => '/resume',
       providesTags: (result = []) => [
         'Resume',
         ...result.map(({ id }: { id: string }) => ({
@@ -19,6 +19,5 @@ export const apiSlice = createApi({
     }),
   }),
 });
-
 
 export const { useGetResumesQuery } = apiSlice;
