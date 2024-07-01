@@ -217,7 +217,7 @@ export const resumeSlice = createSlice({
         draft[form].splice(idx, 1);
       }
     },
-    setResume: (draft, action: PayloadAction<Resume>) => {
+    setResume: (_draft, action: PayloadAction<Resume>) => {
       return action.payload;
     },
   },

@@ -130,7 +130,7 @@ export const settingsSlice = createSlice({
 
       draft['showBulletPoints'][field] = value;
     },
-    setSettings: (draft, action: PayloadAction<Settings>) => {
+    setSettings: (_draft, action: PayloadAction<Settings>) => {
       return action.payload;
     },
   },
