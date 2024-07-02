@@ -4,8 +4,8 @@ import { ResumesListBoard } from './components/resumes-list-board';
 
 export const CVManagement = () => {
   return (
-    <div className='flex justify-center'>
-      <div className="flex flex-col max-w-screen-xl w-full gap-5 mt-10">
+    <div className='flex justify-center px-7 mb-5'>
+      <div className="flex flex-col max-w-screen-xl w-full gap-5">
         <Header />
         <ResumesListBoard />
         <AddNewResume />
