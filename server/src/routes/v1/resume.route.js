@@ -12,4 +12,5 @@ router.route('/').get(resumeController.getResumeAll);
 router.route('/resumepage').get(resumeController.getResumeByPage);
 router.route('/:resumeId').get(resumeController.getResumeById);
 router.route('/:resumeId').delete(resumeController.deleteResume);
+router.route('/:resumeId').patch(resumeController.updateResumeById);
 module.exports = router;

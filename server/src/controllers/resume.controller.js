@@ -5,7 +5,7 @@ const { resumeService } = require('../services');
 
 const createResume = catchAsync(async (req, res) => {
   try {
-    console.log("hello");
+    console.log('hello');
     console.log(req);
     result = await resumeService.createResume(req);
     res.status(httpStatus.CREATED).send({
@@ -16,6 +16,16 @@ const createResume = catchAsync(async (req, res) => {
     console.log(error);
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid request');
   }
+});
+
+const updateResumeById = catchAsync(async (req, res) => {
+  const { resumeId } = req.params.resumeId;
+  const updateData = req.body;
+  const updatedResume = await resumeService.updateResumeById(resumeId, updateData);
+  res.send({
+    message: 'Resume updated successfully',
+    resume: updatedResume,
+  });
 });
 
 const getResumeAll = catchAsync(async (req, res) => {
@@ -48,4 +58,5 @@ module.exports = {
   getResumeById,
   deleteResume,
   getResumeByPage,
+  updateResumeById,
 };
