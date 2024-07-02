@@ -31,7 +31,7 @@ export const apiSlice = createApi({
         formData.append('jsonData', JSON.stringify(jsonData));
 
         return {
-          url: '/resume', 
+          url: '/resume',
           method: 'POST',
           body: formData,
         };
@@ -39,7 +39,10 @@ export const apiSlice = createApi({
       invalidatesTags: ['Resume'],
     }),
 
+    getResumeById: builder.query<Resume, string>({
+      query: resumeId => `/resume/${resumeId}`,
+    }),
   }),
 });
 
-export const { useGetResumesQuery, useUploadNewResumeMutation } = apiSlice;
+export const { useGetResumesQuery, useUploadNewResumeMutation, useGetResumeByIdQuery } = apiSlice;
