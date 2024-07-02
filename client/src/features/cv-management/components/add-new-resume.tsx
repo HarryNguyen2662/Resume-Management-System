@@ -1,6 +1,7 @@
 import type { TextItems } from '../lib/parse-resume-from-pdf/types';
+import type { FormEvent} from 'react';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
