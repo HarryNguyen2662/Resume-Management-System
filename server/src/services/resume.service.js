@@ -4,14 +4,32 @@ const httpStatus = require('http-status');
 const { Resume } = require('../models');
 const ApiError = require('../utils/ApiError');
 const http = require('node:https');
+const uploadToCloudinary = require('../utils/cloudinary-upload');
 
 /**
  * Create or update a resume
  * @param {ObjectId} resumeBody
  * @returns {Promise<Resume>}
  */
-const createResume = async (resumeBody) => {
-  return Resume.create(resumeBody);
+const createResume = async (req) => {
+  const file = req.file;
+  const parsedJSON = JSON.parse(req.body.jsonData);
+  try {
+    const result = await uploadToCloudinary(file.buffer);
+    console.log('Cloudinary result:', result);
+    console.log('JSON Data:', parsedJSON);
+
+    const fileUrl = result.secure_url;
+    const cloudinaryId = result.public_id;
+
+    const resumePdf = { fileUrl, cloudinaryId };
+
+    const newResume = await Resume.create({ ...parsedJSON, resumePdf });
+
+    return newResume;
+  } catch (error) {
+    console.error('Error uploading file to server:', error);
+  }
 };
 
 /**

@@ -2,12 +2,20 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const { toJSON, paginate } = require('./plugins');
 
+const fileSchema = new mongoose.Schema(
+  {
+    fileUrl: String,
+    cloudinaryId: String,
+  },
+  { timestamps: true }
+);
+
 const resumeSchema = mongoose.Schema(
   {
     profile: {
-      email: { type: String, required: true },
+      email: String,
       location: String,
-      name: { type: String, required: true },
+      name: String,
       phone: String,
       summmary: String,
       url: String,
@@ -46,6 +54,9 @@ const resumeSchema = mongoose.Schema(
         descriptions: [{ type: String, trim: true }],
       },
     ],
+    resumePdf: {
+      type: fileSchema,
+    },
   },
   {
     timestamps: true,

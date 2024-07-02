@@ -4,8 +4,18 @@ const ApiError = require('../utils/ApiError');
 const { resumeService } = require('../services');
 
 const createResume = catchAsync(async (req, res) => {
-  const resume = await resumeService.createResume(req.body);
-  res.status(httpStatus.CREATED).send(resume);
+  try {
+    console.log("hello");
+    console.log(req);
+    result = await resumeService.createResume(req);
+    res.status(httpStatus.CREATED).send({
+      message: 'File and data received.',
+      resume: result,
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid request');
+  }
 });
 
 const getResumeAll = catchAsync(async (req, res) => {
