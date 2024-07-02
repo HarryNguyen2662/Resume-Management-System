@@ -43,5 +43,9 @@ export interface Resume {
   projects: Project[];
   skills: Skill[];
   custom: Custom[];
+  resumePdf: {
+    fileUrl: string,
+    cloudinaryId: string,
+  },
   id: string;
 }
