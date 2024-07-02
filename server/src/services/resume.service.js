@@ -5,6 +5,7 @@ const { Resume } = require('../models');
 const ApiError = require('../utils/ApiError');
 const http = require('node:https');
 const uploadToCloudinary = require('../utils/cloudinary-upload');
+const DeleteOnCloudinary = require('../utils/cloudinary-delete');
 
 /**
  * Create or update a resume
@@ -33,6 +34,36 @@ const createResume = async (req) => {
 };
 
 /**
+ * Update a resume by ID
+ * @param {ObjectId} resumeId - The ID of the resume to update
+ * @param {Object} updateData - The data to update the resume with
+ * @returns {Promise<Resume>} - The updated resume
+ */
+const updateResumeById = async (resumeId, updateData) => {
+  const resume = await Resume.findById(resumeId);
+  if (!resume) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Can not update resume because of invalid id');
+  }
+  const updatedResume = await Resume.findByIdAndUpdate(resumeId, updateData, { new: true });
+  return updatedResume;
+};
+
+/**
+ * Delete a resume by ID
+ * @param {ObjectId} resumeId
+ * @returns {Promise<Resume>}
+ */
+const deleteResumeById = async (resumeId) => {
+  const cloudinaryId = await Resume.findById(resumeId).resumePdf.cloudinaryId;
+  const resume = await Resume.findByIdAndDelete(resumeId);
+  if (!resume) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Can not delete resume because of invalid id');
+  }
+  await DeleteOnCloudinary(cloudinaryId);
+  return resume;
+};
+
+/**
  * Get all resume
  * @returns {Promise<Resume>}
  */
@@ -50,19 +81,6 @@ const getResumeById = async (resumeId) => {
   const resume = await Resume.findById(resumeId);
   if (!resume) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Can not get resume because of invalid id');
-  }
-  return resume;
-};
-
-/**
- * Delete a resume by ID
- * @param {ObjectId} resumeId
- * @returns {Promise<Resume>}
- */
-const deleteResumeById = async (resumeId) => {
-  const resume = await Resume.findByIdAndDelete(resumeId);
-  if (!resume) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Can not delete resume because of invalid id');
   }
   return resume;
 };
@@ -95,4 +113,5 @@ module.exports = {
   deleteResumeById,
   getResumeAll,
   getResumeListbyPage,
+  updateResumeById,
 };

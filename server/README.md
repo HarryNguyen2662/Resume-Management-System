@@ -102,6 +102,17 @@ To get started with the Resume Management API, clone the repository and install 
   - `page`: Page number.
 - **Success Response**: HTTP 200 (OK)
 
+#### Update Resume by ID
+
+- **URL**: `/v1/resume/{resumeId}`
+- **Method**: `PATCH`
+- **URL Parameters**:
+  - `resumeId`: ID of the resume to update.
+- **Data Parameters**:
+  - Any field of the resume object that needs to be updated.
+- **Success Response**: HTTP 200 (OK)
+  - **Content**: `{ message: "Resume updated successfully", resume: { updated resume object } }`
+
 ### ResumePDF
 
 #### Upload a Resume PDF
