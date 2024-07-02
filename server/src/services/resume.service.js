@@ -17,8 +17,6 @@ const createResume = async (req) => {
   const parsedJSON = JSON.parse(req.body.jsonData);
   try {
     const result = await uploadToCloudinary(file.buffer);
-    console.log('Cloudinary result:', result);
-    console.log('JSON Data:', parsedJSON);
 
     const fileUrl = result.secure_url;
     const cloudinaryId = result.public_id;

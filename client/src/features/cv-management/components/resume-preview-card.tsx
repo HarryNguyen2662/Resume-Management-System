@@ -1,6 +1,6 @@
 import type { Resume } from '@/interface/resume';
 
-import { ChevronRightIcon } from '@radix-ui/react-icons';
+import { ChevronRightIcon, TrashIcon } from '@radix-ui/react-icons';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -36,14 +36,15 @@ export const ResumePreviewCard = ({ resume }: ResumePreviewCardProps) => {
       </div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button className='w-[100px] ml-auto'>Delete</Button>
+          <Button variant="ghost" size="icon" className="ml-auto">
+            <TrashIcon className="h-4 w-4" />
+          </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this resume from system?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the resume and remove its data from the
-              server.
+              This action cannot be undone. This will permanently delete the resume and remove its data from the server.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
