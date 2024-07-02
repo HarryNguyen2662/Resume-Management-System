@@ -82,7 +82,7 @@ const getResumeListbyPage = async (options) => {
 
   const resume = await Resume.find({}).skip(skip).limit(limit).exec();
   return {
-    files,
+    resume,
     currentPage: page,
     totalPages,
     totalCount,

@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.route('/').post(upload.single('pdf'), resumeController.createResume);
 router.route('/').get(resumeController.getResumeAll);
+router.route('/resumepage').get(resumeController.getResumeByPage);
 router.route('/:resumeId').get(resumeController.getResumeById);
 router.route('/:resumeId').delete(resumeController.deleteResume);
-router.route('/resumepage').get(resumeController.getResumeByPage);
 module.exports = router;
