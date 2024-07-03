@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface UploadFileArgs {
   pdf: File;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   jsonData: Record<string, any>;
 }
 
@@ -42,7 +43,16 @@ export const apiSlice = createApi({
     getResumeById: builder.query<Resume, string>({
       query: resumeId => `/resume/${resumeId}`,
     }),
+
+    deleteResumeById: builder.mutation<void, string>({
+      query: resumeId => ({
+        url: `/resume/${resumeId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Resume'],
+    }),
   }),
 });
 
-export const { useGetResumesQuery, useUploadNewResumeMutation, useGetResumeByIdQuery } = apiSlice;
+export const { useGetResumesQuery, useUploadNewResumeMutation, useGetResumeByIdQuery, useDeleteResumeByIdMutation } =
+  apiSlice;

@@ -3,7 +3,7 @@ const streamifier = require('streamifier');
 
 const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream({ resource_type: 'raw', format: 'pdf' }, (error, result) => {
+    const uploadStream = cloudinary.uploader.upload_stream({ resource_type: 'raw' }, (error, result) => {
       if (error) {
         reject(error);
       } else {

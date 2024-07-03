@@ -1,4 +1,5 @@
 import type { Resume } from '@/interface/resume';
+import { useDeleteResumeByIdMutation } from '@/services/apiSlice';
 
 import { ChevronRightIcon, TrashIcon } from '@radix-ui/react-icons';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import type { FormEvent } from 'react';
 
 interface ResumePreviewCardProps {
   resume: Resume;
@@ -22,6 +24,12 @@ interface ResumePreviewCardProps {
 
 export const ResumePreviewCard = ({ resume }: ResumePreviewCardProps) => {
   const navigate = useNavigate();
+  const [deleteFile] = useDeleteResumeByIdMutation();
+
+  const handleDelete = async (e: FormEvent) => {
+    e.preventDefault();
+    deleteFile(resume.id);
+  };
 
   return (
     <div className="flex flex-col gap-5 border-solid border-2 h-fit border-neutral-400 rounded-md p-4">
@@ -49,7 +57,9 @@ export const ResumePreviewCard = ({ resume }: ResumePreviewCardProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
+            <AlertDialogAction>
+              <Button onClick={handleDelete}>Continue</Button>
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

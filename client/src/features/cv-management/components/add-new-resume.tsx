@@ -1,5 +1,5 @@
 import type { TextItems } from '../lib/parse-resume-from-pdf/types';
-import type { FormEvent} from 'react';
+import type { FormEvent } from 'react';
 
 import { useEffect, useState } from 'react';
 
@@ -14,31 +14,39 @@ import { groupLinesIntoSections } from '../lib/parse-resume-from-pdf/group-lines
 import { groupTextItemsIntoLines } from '../lib/parse-resume-from-pdf/group-text-items-into-lines';
 import { readPdf } from '../lib/parse-resume-from-pdf/read-pdf';
 
-const defaultFileState = {
-  name: '',
-  size: 0,
-  fileUrl: '',
-};
+const defaultFileState = [
+  {
+    name: '',
+    size: 0,
+    fileUrl: '',
+  },
+];
 
 interface ResumeInputZoneProps {
-  setPdf: React.Dispatch<React.SetStateAction<File | null>>;
-  onFileUrlChange: (fileUrl: string) => void;
+  setPdfs: React.Dispatch<React.SetStateAction<File[]>>;
+  onFileUrlsChange: (fileUrls: string[]) => void;
 }
 
-const ResumeInputZone = ({ onFileUrlChange, setPdf }: ResumeInputZoneProps) => {
-  const [file, setFile] = useState(defaultFileState);
+const ResumeInputZone = ({ onFileUrlsChange, setPdfs }: ResumeInputZoneProps) => {
+  const [files, setFiles] = useState(defaultFileState);
 
-  const setNewFile = (newFile: File) => {
-    if (file.fileUrl) {
-      URL.revokeObjectURL(file.fileUrl);
-    }
+  const setNewFiles = (newFiles: File[]) => {
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    files.forEach(file => {
+      if (file.fileUrl) {
+        URL.revokeObjectURL(file.fileUrl);
+      }
+    });
 
-    const { name, size } = newFile;
-    const fileUrl = URL.createObjectURL(newFile);
+    const updatedFiles = newFiles.map(newFile => {
+      const { name, size } = newFile;
+      const fileUrl = URL.createObjectURL(newFile);
+      return { name, size, fileUrl };
+    });
 
-    setPdf(newFile);
-    setFile({ name, size, fileUrl });
-    onFileUrlChange(fileUrl);
+    setPdfs(newFiles);
+    setFiles(updatedFiles);
+    onFileUrlsChange(updatedFiles.map(file => file.fileUrl));
   };
 
   const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,67 +54,85 @@ const ResumeInputZone = ({ onFileUrlChange, setPdf }: ResumeInputZoneProps) => {
 
     if (!files) return;
 
-    const newFile = files[0];
-
-    setNewFile(newFile);
+    setNewFiles(Array.from(files));
   };
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Label htmlFor="resume">Resume</Label>
-      <Input id="resume" type="file" onChange={onInputChange} />
+      <Input id="resume" type="file" onChange={onInputChange} multiple /> {/* Add multiple attribute */}
     </div>
   );
 };
 
 export const AddNewResume = () => {
-  const [fileUrl, setFileUrl] = useState('');
-  const [pdf, setPdf] = useState<File | null>(null);
-  const [textItems, setTextItems] = useState<TextItems>([]);
+  const [fileUrls, setFileUrls] = useState<string[]>([]);
+  const [pdfs, setPdfs] = useState<File[]>([]);
+  const [textItems, setTextItems] = useState<TextItems[]>([]);
   const [uploadFile, { isLoading }] = useUploadNewResumeMutation();
-  const lines = groupTextItemsIntoLines(textItems || []);
-  const sections = groupLinesIntoSections(lines);
-  const jsonData = extractResumeFromSections(sections);
+  const lines = textItems.map(items => groupTextItemsIntoLines(items || []));
+  const sections = lines.map(line => groupLinesIntoSections(line));
+  const jsonData = sections.map(section => extractResumeFromSections(section));
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    async function test() {
-      const textItems = await readPdf(fileUrl);
+    setIsOpen(true);
 
-      setTextItems(textItems);
+    const fetchTextItems = async () => {
+      const promises = fileUrls.map(async url => {
+        return await readPdf(url);
+      });
+      const results = await Promise.all(promises);
+      setTextItems(results);
+    };
+
+    if (fileUrls.length > 0) {
+      fetchTextItems();
     }
+  }, [fileUrls]);
 
-    test();
-  }, [fileUrl]);
-
-  const canSave = [pdf, jsonData].every(Boolean) && !isLoading;
+  const canSave = pdfs.length > 0 && jsonData.every(data => Boolean(data)) && !isLoading;
 
   const handleUpload = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (canSave && pdf && jsonData) {
+    if (canSave && pdfs.length && jsonData.every(data => Boolean(data))) {
       try {
-        await uploadFile({ pdf, jsonData }).unwrap();
+        for (let i = 0; i < pdfs.length; i++) {
+          await uploadFile({ pdf: pdfs[i], jsonData: jsonData[i] }).unwrap();
+        }
       } catch (err) {
         console.error('Failed to upload the file:', err);
       }
     }
+
+    setIsOpen(false);
   };
 
   return (
     <div className="flex justify-center">
       <Dialog>
         <DialogTrigger asChild>
-          <Button>Add New Resume</Button>
+          <Button
+            onClick={() => {
+              console.log(isOpen);
+              setIsOpen(true);
+            }}
+          >
+            Add New Resume
+          </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Upload new resume</DialogTitle>
-          </DialogHeader>
-          <ResumeInputZone setPdf={setPdf} onFileUrlChange={fileUrl => setFileUrl(fileUrl)} />
-          <DialogFooter>
-            <Button onClick={handleUpload}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
+        {isOpen && (
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Upload new resume</DialogTitle>
+            </DialogHeader>
+            <ResumeInputZone setPdfs={setPdfs} onFileUrlsChange={setFileUrls} />
+            <DialogFooter>
+              <Button onClick={handleUpload}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        )}
       </Dialog>
     </div>
   );

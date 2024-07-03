@@ -52,7 +52,10 @@ const updateResumeById = async (resumeId, updateData) => {
  * @returns {Promise<Resume>}
  */
 const deleteResumeById = async (resumeId) => {
-  const cloudinaryId = await Resume.findById(resumeId).resumePdf.cloudinaryId;
+  const result = await Resume.findById(resumeId);
+  const cloudinaryId = result.resumePdf.cloudinaryId;
+  console.log(cloudinaryId);
+  console.log(cloudinaryId);
   const resume = await Resume.findByIdAndDelete(resumeId);
   if (!resume) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Can not delete resume because of invalid id');
