@@ -1,6 +1,7 @@
 import type { TextItems } from '../lib/parse-resume-from-pdf/types';
 import type { FormEvent } from 'react';
 
+import { ReloadIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -41,6 +42,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs }: ResumeInputZoneProps) =>
     const updatedFiles = newFiles.map(newFile => {
       const { name, size } = newFile;
       const fileUrl = URL.createObjectURL(newFile);
+
       return { name, size, fileUrl };
     });
 
@@ -83,6 +85,7 @@ export const AddNewResume = () => {
         return await readPdf(url);
       });
       const results = await Promise.all(promises);
+
       setTextItems(results);
     };
 
@@ -129,7 +132,14 @@ export const AddNewResume = () => {
             </DialogHeader>
             <ResumeInputZone setPdfs={setPdfs} onFileUrlsChange={setFileUrls} />
             <DialogFooter>
-              <Button onClick={handleUpload}>Save</Button>
+              {isLoading ? (
+                <Button disabled>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button onClick={handleUpload}>Save</Button>
+              )}
             </DialogFooter>
           </DialogContent>
         )}
