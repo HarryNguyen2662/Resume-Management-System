@@ -1,12 +1,15 @@
 import type { TextItems } from '../lib/parse-resume-from-pdf/types';
 import type { FormEvent } from 'react';
 
+import { ReloadIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/components/ui/use-toast'
 import { useUploadNewResumeMutation } from '@/services/apiSlice';
 
 import { extractResumeFromSections } from '../lib/parse-resume-from-pdf/extract-resume-from-sections';
@@ -41,6 +44,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs }: ResumeInputZoneProps) =>
     const updatedFiles = newFiles.map(newFile => {
       const { name, size } = newFile;
       const fileUrl = URL.createObjectURL(newFile);
+
       return { name, size, fileUrl };
     });
 
@@ -75,6 +79,8 @@ export const AddNewResume = () => {
   const jsonData = sections.map(section => extractResumeFromSections(section));
   const [isOpen, setIsOpen] = useState(true);
 
+  const { toast } = useToast();
+
   useEffect(() => {
     setIsOpen(true);
 
@@ -83,6 +89,7 @@ export const AddNewResume = () => {
         return await readPdf(url);
       });
       const results = await Promise.all(promises);
+
       setTextItems(results);
     };
 
@@ -107,6 +114,11 @@ export const AddNewResume = () => {
     }
 
     setIsOpen(false);
+    toast({
+      title: 'Successful!',
+      description: 'The resumes have been uploaded.',
+      className: 'bg-green-200',
+    })
   };
 
   return (
@@ -129,11 +141,19 @@ export const AddNewResume = () => {
             </DialogHeader>
             <ResumeInputZone setPdfs={setPdfs} onFileUrlsChange={setFileUrls} />
             <DialogFooter>
-              <Button onClick={handleUpload}>Save</Button>
+              {isLoading ? (
+                <Button disabled>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button onClick={handleUpload}>Save</Button>
+              )}
             </DialogFooter>
           </DialogContent>
         )}
       </Dialog>
+      <Toaster />
     </div>
   );
 };
