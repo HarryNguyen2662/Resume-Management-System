@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/components/ui/use-toast'
 import { useUploadNewResumeMutation } from '@/services/apiSlice';
 
 import { extractResumeFromSections } from '../lib/parse-resume-from-pdf/extract-resume-from-sections';
@@ -77,6 +79,8 @@ export const AddNewResume = () => {
   const jsonData = sections.map(section => extractResumeFromSections(section));
   const [isOpen, setIsOpen] = useState(true);
 
+  const { toast } = useToast();
+
   useEffect(() => {
     setIsOpen(true);
 
@@ -110,6 +114,11 @@ export const AddNewResume = () => {
     }
 
     setIsOpen(false);
+    toast({
+      title: 'Successful!',
+      description: 'The resumes have been uploaded.',
+      className: 'bg-green-200',
+    })
   };
 
   return (
@@ -144,6 +153,7 @@ export const AddNewResume = () => {
           </DialogContent>
         )}
       </Dialog>
+      <Toaster />
     </div>
   );
 };
