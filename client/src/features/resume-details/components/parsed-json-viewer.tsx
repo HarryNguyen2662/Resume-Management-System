@@ -6,8 +6,8 @@ import { initialEducation, initialWorkExperience } from 'lib/redux/resumeSlice';
 import { Fragment } from 'react';
 
 const TableRowHeader = ({ children }: { children: React.ReactNode }) => (
-  <tr className="divide-x bg-gray-50">
-    <th className="px-3 py-2 font-semibold" scope="colgroup" colSpan={2}>
+  <tr className="divide-x bg-gray-50 text-lg font-semibold mb-2">
+    <th className="px-3 py-2 text-lg font-semibold mb-2" scope="colgroup" colSpan={2}>
       {children}
     </th>
   </tr>
@@ -60,69 +60,67 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
   }
 
   return (
-    <table className="mt-2 w-full border text-sm text-gray-900">
+    <table className="w-full text-sm text-gray-900 border-solid border-2 border-slate-400 rounded-lg">
       <tbody className="divide-y text-left align-top">
-        <TableRowHeader>Profile</TableRowHeader>
-        <TableRow label="Name" value={resume.profile.name} />
-        <TableRow label="Email" value={resume.profile.email} />
-        <TableRow label="Phone" value={resume.profile.phone} />
-        <TableRow label="Location" value={resume.profile.location} />
-        <TableRow label="Link" value={resume.profile.url} />
-        <TableRow label="Summary" value={resume.profile.summary} />
-        <TableRowHeader>Education</TableRowHeader>
-        {educations.map((education, idx) => (
-          <Fragment key={idx}>
-            <TableRow label="School" value={education.school} />
-            <TableRow label="Degree" value={education.degree} />
-            <TableRow label="GPA" value={education.gpa} />
-            <TableRow label="Date" value={education.date} />
-            <TableRow
-              label="Descriptions"
-              value={education.descriptions}
-              className={educations.length - 1 !== 0 && idx !== educations.length - 1 && '!border-b-4'}
-            />
-          </Fragment>
-        ))}
-        <TableRowHeader>Work Experience</TableRowHeader>
-        {workExperiences.map((workExperience, idx) => (
-          <Fragment key={idx}>
-            <TableRow label="Company" value={workExperience.company} />
-            <TableRow label="Job Title" value={workExperience.jobTitle} />
-            <TableRow label="Date" value={workExperience.date} />
-            <TableRow
-              label="Descriptions"
-              value={workExperience.descriptions}
-              className={workExperiences.length - 1 !== 0 && idx !== workExperiences.length - 1 && '!border-b-4'}
-            />
-          </Fragment>
-        ))}
-        {resume.projects.length > 0 && <TableRowHeader>Projects</TableRowHeader>}
-        {resume.projects.map((project, idx) => (
-          <Fragment key={idx}>
-            <TableRow label="Project" value={project.project} />
-            <TableRow label="Date" value={project.date} />
-            <TableRow
-              label="Descriptions"
-              value={project.descriptions}
-              className={resume.projects.length - 1 !== 0 && idx !== resume.projects.length - 1 && '!border-b-4'}
-            />
-          </Fragment>
-        ))}
-        <TableRowHeader>Skills</TableRowHeader>
-        <TableRow label="Descriptions" value={skills} />
+        <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
+          <TableRowHeader>Profile</TableRowHeader>
+          <TableRow label="Name" value={resume.profile.name} />
+          <TableRow label="Email" value={resume.profile.email} />
+          <TableRow label="Phone" value={resume.profile.phone} />
+          <TableRow label="Location" value={resume.profile.location} />
+          <TableRow label="Link" value={resume.profile.url} />
+          <TableRow label="Summary" value={resume.profile.summary} />
+        </div>
+        <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
+          <TableRowHeader>Education</TableRowHeader>
+          {educations.map((education, idx) => (
+            <Fragment key={idx}>
+              <TableRow label="School" value={education.school} />
+              <TableRow label="Degree" value={education.degree} />
+              <TableRow label="GPA" value={education.gpa} />
+              <TableRow label="Date" value={education.date} />
+              <TableRow
+                label="Descriptions"
+                value={education.descriptions}
+                className={educations.length - 1 !== 0 && idx !== educations.length - 1 && '!border-b-4'}
+              />
+            </Fragment>
+          ))}
+        </div>
+        <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
+          <TableRowHeader>Work Experience</TableRowHeader>
+          {workExperiences.map((workExperience, idx) => (
+            <Fragment key={idx}>
+              <TableRow label="Company" value={workExperience.company} />
+              <TableRow label="Job Title" value={workExperience.jobTitle} />
+              <TableRow label="Date" value={workExperience.date} />
+              <TableRow
+                label="Descriptions"
+                value={workExperience.descriptions}
+                className={workExperiences.length - 1 !== 0 && idx !== workExperiences.length - 1 && '!border-b-4'}
+              />
+            </Fragment>
+          ))}
+        </div>
+        <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
+          {resume.projects.length > 0 && <TableRowHeader>Projects</TableRowHeader>}
+          {resume.projects.map((project, idx) => (
+            <Fragment key={idx}>
+              <TableRow label="Project" value={project.project} />
+              <TableRow label="Date" value={project.date} />
+              <TableRow
+                label="Descriptions"
+                value={project.descriptions}
+                className={resume.projects.length - 1 !== 0 && idx !== resume.projects.length - 1 && '!border-b-4'}
+              />
+            </Fragment>
+          ))}
+        </div>
+        <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
+          <TableRowHeader>Skills</TableRowHeader>
+          <TableRow label="Descriptions" value={skills} />
+        </div>
       </tbody>
     </table>
   );
 };
-
-/*
-const ParsedJsonViewer = () => {
-  return (
-    <div>
-      Viewer
-    </div>
-  )
-}
-
-export default ParsedJsonViewer
-*/
