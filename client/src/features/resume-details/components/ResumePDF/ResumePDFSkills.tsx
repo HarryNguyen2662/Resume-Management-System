@@ -21,16 +21,16 @@ export const ResumePDFSkills = ({
   showBulletPoints: boolean;
 }) => {
   const { descriptions, featuredSkills } = skills;
-  const featuredSkillsWithText = featuredSkills.filter((item) => item.skill);
-  const featuredSkillsPair = [
-    [featuredSkillsWithText[0], featuredSkillsWithText[3]],
-    [featuredSkillsWithText[1], featuredSkillsWithText[4]],
-    [featuredSkillsWithText[2], featuredSkillsWithText[5]],
-  ];
+  // const featuredSkillsWithText = featuredSkills.filter((item) => item.skill);
+  // const featuredSkillsPair = [
+  //   [featuredSkillsWithText[0], featuredSkillsWithText[3]],
+  //   [featuredSkillsWithText[1], featuredSkillsWithText[4]],
+  //   [featuredSkillsWithText[2], featuredSkillsWithText[5]],
+  // ];
 
   return (
     <ResumePDFSection themeColor={themeColor} heading={heading}>
-      {featuredSkillsWithText.length > 0 && (
+      {/* {featuredSkillsWithText.length > 0 && (
         <View style={{ ...styles.flexRowBetween, marginTop: spacing['0.5'] }}>
           {featuredSkillsPair.map((pair, idx) => (
             <View
@@ -57,7 +57,7 @@ export const ResumePDFSkills = ({
             </View>
           ))}
         </View>
-      )}
+      )} */}
       <View style={{ ...styles.flexCol }}>
         <ResumePDFBulletList
           items={descriptions}

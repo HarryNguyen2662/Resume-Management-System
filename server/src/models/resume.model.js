@@ -44,16 +44,13 @@ const resumeSchema = mongoose.Schema(
         project: [{ type: String }],
       },
     ],
-    skills: [
-      {
-        descriptions: [{ type: String, trim: true }],
-      },
-    ],
-    custom: [
-      {
-        descriptions: [{ type: String, trim: true }],
-      },
-    ],
+    skills: {
+      descriptions: [{ type: String, trim: true }],
+      featuredSkill: [{ skill: String, rating: Number }],
+    },
+    custom: {
+      descriptions: [{ type: String, trim: true }],
+    },
     resumePdf: {
       type: fileSchema,
     },

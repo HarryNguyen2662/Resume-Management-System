@@ -1,13 +1,15 @@
 import { useParams } from 'react-router-dom';
 
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useGetResumeByIdQuery } from '@/services/apiSlice';
 
-import ParsedJsonViewer from './components/parsed-json-viewer';
+import { ParsedJsonViewer } from './components/parsed-json-viewer';
 import ResumePdfViewer from './components/resume-pdf-viewer';
 
 const ResumeDetails = () => {
   const { id: resumeId } = useParams();
 
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
   const { data: resume, isSuccess } = useGetResumeByIdQuery(resumeId!);
 
   if (!isSuccess) {
@@ -18,8 +20,14 @@ const ResumeDetails = () => {
 
   return (
     <div className="flex w-full overflow-hidden">
-      <ResumePdfViewer resume={resume} />
-      <ParsedJsonViewer />
+      <div className="w-1/2 min-w-[700px]">
+        <ResumePdfViewer resume={resume} />
+      </div>
+      <div className='mr-3'>
+        <ScrollArea className="h-[calc(100vh-120px)] rounded-lg border-solid border-2 border-slate-400">
+          <ParsedJsonViewer resume={resume} />
+        </ScrollArea>
+      </div>
     </div>
   );
 };
