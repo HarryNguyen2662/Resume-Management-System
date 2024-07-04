@@ -2,12 +2,6 @@ import type { Resume } from '@/interface/resume';
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-interface UploadFileArgs {
-  pdf: File;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  jsonData: Record<string, any>;
-}
-
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
@@ -24,7 +18,7 @@ export const apiSlice = createApi({
       ],
     }),
 
-    uploadNewResume: builder.mutation<void, UploadFileArgs>({
+    uploadNewResume: builder.mutation({
       query: ({ pdf, jsonData }) => {
         const formData = new FormData();
 

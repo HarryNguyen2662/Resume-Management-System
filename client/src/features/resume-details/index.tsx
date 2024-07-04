@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useGetResumeByIdQuery } from '@/services/apiSlice';
 
-import ResumePdfViewer from './components/resume-pdf-viewer';
-
 import { ParsedJsonViewer } from './components/parsed-json-viewer';
+import ResumePdfViewer from './components/resume-pdf-viewer';
 
 const ResumeDetails = () => {
   const { id: resumeId } = useParams();
@@ -17,12 +17,17 @@ const ResumeDetails = () => {
   }
 
   console.log(resume);
-  const pdfUrl = resume.resumePdf.fileUrl;
 
   return (
     <div className="flex w-full overflow-hidden">
-      <ResumePdfViewer pdfUrl={pdfUrl} />
-      <ParsedJsonViewer resume={resume} />
+      <div className="w-1/2 min-w-[700px]">
+        <ResumePdfViewer resume={resume} />
+      </div>
+      <div className='mr-3'>
+        <ScrollArea className="h-[calc(100vh-120px)] rounded-lg border-solid border-2 border-slate-400">
+          <ParsedJsonViewer resume={resume} />
+        </ScrollArea>
+      </div>
     </div>
   );
 };

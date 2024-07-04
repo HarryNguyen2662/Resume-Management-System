@@ -60,7 +60,7 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
   }
 
   return (
-    <table className="w-full text-sm text-gray-900 border-solid border-2 border-slate-400 rounded-lg">
+    <table className="text-sm text-gray-900 border-solid border-2 border-slate-400">
       <tbody className="divide-y text-left align-top">
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
           <TableRowHeader>Profile</TableRowHeader>
