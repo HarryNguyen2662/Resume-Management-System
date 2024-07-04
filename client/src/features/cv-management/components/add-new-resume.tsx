@@ -78,7 +78,7 @@ export const AddNewResume = () => {
   const sections = lines.map(line => groupLinesIntoSections(line));
   const jsonData = sections.map(section => extractResumeFromSections(section));
   const [isOpen, setIsOpen] = useState(true);
-
+  
   const { toast } = useToast();
 
   useEffect(() => {

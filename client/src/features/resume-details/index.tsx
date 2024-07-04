@@ -2,9 +2,8 @@ import { useParams } from 'react-router-dom';
 
 import { useGetResumeByIdQuery } from '@/services/apiSlice';
 
-import ResumePdfViewer from './components/resume-pdf-viewer';
-
 import ParsedJsonViewer from './components/parsed-json-viewer';
+import ResumePdfViewer from './components/resume-pdf-viewer';
 
 const ResumeDetails = () => {
   const { id: resumeId } = useParams();
@@ -16,11 +15,10 @@ const ResumeDetails = () => {
   }
 
   console.log(resume);
-  const pdfUrl = resume.resumePdf.fileUrl;
 
   return (
     <div className="flex w-full overflow-hidden">
-      <ResumePdfViewer pdfUrl={pdfUrl} />
+      <ResumePdfViewer resume={resume} />
       <ParsedJsonViewer />
     </div>
   );

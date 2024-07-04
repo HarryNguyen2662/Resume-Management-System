@@ -1,51 +1,59 @@
-interface Education {
+export interface ResumeProfile {
+  name: string;
+  email: string;
+  phone: string;
+  url: string;
+  summary: string;
+  location: string;
+}
+
+export interface ResumeWorkExperience {
+  company: string;
+  jobTitle: string;
+  date: string;
   descriptions: string[];
-  _id: string;
+}
+
+export interface ResumeEducation {
   school: string;
   degree: string;
   date: string;
   gpa: string;
+  descriptions: string[];
 }
 
-interface WorkExperience {
-  descriptions: string[];
-  _id: string;
-  company: string;
-  jobTitle: string;
-}
-
-interface Project {
-  descriptions: string[];
-  project: string[];
-  _id: string;
+export interface ResumeProject {
+  project: string;
   date: string;
+  descriptions: string[];
 }
 
-interface Skill {
-  descriptions: string[];
-  _id: string;
+export interface FeaturedSkill {
+  skill: string;
+  rating: number;
 }
 
-interface Custom {
+export interface ResumeSkills {
+  featuredSkills: FeaturedSkill[];
   descriptions: string[];
-  _id: string;
 }
+
+export interface ResumeCustom {
+  descriptions: string[];
+}
+
 export interface Resume {
-  profile: {
-    email: string;
-    location: string;
-    name: string;
-    phone: string;
-    url: string;
-  };
-  educations: Education[];
-  workExperiences: WorkExperience[];
-  projects: Project[];
-  skills: Skill[];
-  custom: Custom[];
+  profile: ResumeProfile;
+  workExperiences: ResumeWorkExperience[];
+  educations: ResumeEducation[];
+  projects: ResumeProject[];
+  skills: ResumeSkills;
+  custom: ResumeCustom;
   resumePdf: {
     fileUrl: string,
     cloudinaryId: string,
   },
   id: string;
 }
+
+export type ResumeKey = keyof Resume;
