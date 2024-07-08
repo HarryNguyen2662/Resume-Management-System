@@ -7,6 +7,27 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
+    getResumesbyPages: builder.query<Resume[], { limit: number; page: number }>({
+      query: ({ limit, page }) => {
+        const searchParams = new URLSearchParams();
+
+        searchParams.set('limit', limit.toString());
+        searchParams.set('page', page.toString());
+
+        return {
+          url: `/resume/resumepage?${searchParams.toString()}`,
+          method: 'GET',
+        };
+      },
+      providesTags: result => [
+        'Resume',
+        ...result.resume.map(({ id }: { id: string }) => ({
+          type: 'Resume' as const,
+          id,
+        })),
+      ],
+    }),
+
     getResumes: builder.query<Resume[], void>({
       query: () => '/resume',
       providesTags: (result = []) => [
@@ -48,5 +69,10 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useGetResumesQuery, useUploadNewResumeMutation, useGetResumeByIdQuery, useDeleteResumeByIdMutation } =
-  apiSlice;
+export const {
+  useGetResumesQuery,
+  useUploadNewResumeMutation,
+  useGetResumeByIdQuery,
+  useDeleteResumeByIdMutation,
+  useGetResumesbyPagesQuery,
+} = apiSlice;

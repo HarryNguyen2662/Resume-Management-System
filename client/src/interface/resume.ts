@@ -43,6 +43,7 @@ export interface ResumeCustom {
 }
 
 export interface Resume {
+  [x: string]: any;
   profile: ResumeProfile;
   workExperiences: ResumeWorkExperience[];
   educations: ResumeEducation[];
@@ -50,9 +51,9 @@ export interface Resume {
   skills: ResumeSkills;
   custom: ResumeCustom;
   resumePdf: {
-    fileUrl: string,
-    cloudinaryId: string,
-  },
+    fileUrl: string;
+    cloudinaryId: string;
+  };
   id: string;
 }
 
