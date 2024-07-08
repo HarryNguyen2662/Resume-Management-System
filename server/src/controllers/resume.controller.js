@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
+const pick = require('../utils/pick');
 const { resumeService } = require('../services');
 
 const createResume = catchAsync(async (req, res) => {
@@ -46,8 +47,8 @@ const deleteResume = catchAsync(async (req, res) => {
 
 const getResumeByPage = catchAsync(async (req, res) => {
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const result = await resumeService.getResumeListbyPage(options);
-  res.send(result);
+  const resume = await resumeService.getResumeListbyPage(options);
+  res.send(resume);
 });
 
 module.exports = {

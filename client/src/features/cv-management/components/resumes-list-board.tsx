@@ -9,9 +9,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { useGetResumesQuery } from '@/services/apiSlice';
+import { useGetResumesbyPagesQuery, useGetResumesQuery } from '@/services/apiSlice';
 
 import { ResumePreviewCard } from './resume-preview-card';
+import { Resume } from '@/interface/resume';
 
 interface PaginationSelectionProps {
   total: number;
@@ -94,12 +95,17 @@ const PaginationSelection = ({ total, itemsPerPage, currentPage, setCurrentPage 
 };
 
 export const ResumesListBoard = () => {
-  const { data: resumes, isError, error, isLoading, isSuccess } = useGetResumesQuery();
-
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
+  const { data, isError, error, isLoading, isSuccess } = useGetResumesbyPagesQuery({
+    page: currentPage,
+    limit: itemsPerPage,
+  });
+
+  console.log(data);
 
   let content;
+  const resumes = data?.resume || [];
 
   if (isLoading) {
     content = <p>Loading...</p>;
@@ -107,7 +113,7 @@ export const ResumesListBoard = () => {
     const endIndex = currentPage * itemsPerPage;
     const startIndex = endIndex - itemsPerPage;
 
-    content = resumes.slice(startIndex, endIndex).map(resume => <ResumePreviewCard key={resume.id} resume={resume} />);
+    content = resumes.map((resume: Resume) => <ResumePreviewCard key={resume.id} resume={resume} />);
   } else if (isError) {
     content = <div>{error.toString()}</div>;
   }
@@ -118,7 +124,7 @@ export const ResumesListBoard = () => {
         {content}
       </div>
       <PaginationSelection
-        total={resumes ? resumes.length : 0}
+        total={data?.totalCount}
         itemsPerPage={itemsPerPage}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
