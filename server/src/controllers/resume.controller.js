@@ -18,9 +18,8 @@ const createResume = catchAsync(async (req, res) => {
 });
 
 const updateResumeById = catchAsync(async (req, res) => {
-  const { resumeId } = req.params.resumeId;
   const updateData = req.body;
-  const updatedResume = await resumeService.updateResumeById(resumeId, updateData);
+  const updatedResume = await resumeService.updateResumeById(req.params.resumeId, updateData);
   res.send({
     message: 'Resume updated successfully',
     resume: updatedResume,
