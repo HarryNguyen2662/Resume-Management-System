@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 
 import EducationsEditForm from './JsonEditForm/EducationsEditForm';
 import ProfileEditForm from './JsonEditForm/ProfileEditForm';
+import WorkExperiencesEditForm from './JsonEditForm/WorkExperiencesEditForm';
 
 const TableRowHeader = ({ children }: { children: React.ReactNode }) => (
   <tr className="divide-x bg-gray-50 text-lg font-semibold mb-2">
@@ -107,9 +108,7 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           <TableRowHeader>
             <div className="flex justify-between items-center">
               <p>Work Experience</p>
-              <Button variant="outline" size="icon">
-                <Pencil2Icon className="h-4 w-4" />
-              </Button>
+              <WorkExperiencesEditForm workExperiences={resume.workExperiences} />
             </div>
           </TableRowHeader>
           {workExperiences.map((workExperience, idx) => (

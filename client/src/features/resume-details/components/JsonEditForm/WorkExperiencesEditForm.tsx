@@ -1,4 +1,4 @@
-import type { ResumeEducation } from '@/interface/resume';
+import type { ResumeWorkExperience } from '@/interface/resume';
 
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { ErrorMessage,Field, FieldArray, Form, Formik } from 'formik';
@@ -19,42 +19,40 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
-type EduField = 'school' | 'degree' | 'date' | 'gpa' | 'descriptions';
+type WorkField = 'company' | 'jobTitle' | 'date' | 'descriptions';
 
 interface formFieldType {
-  field: EduField;
+  field: WorkField;
   label: string;
 }
 
 const formFields: formFieldType[] = [
-  { field: 'school', label: 'School' },
-  { field: 'degree', label: 'Degree' },
+  { field: 'company', label: 'Company' },
+  { field: 'jobTitle', label: 'Job Title' },
   { field: 'date', label: 'Date' },
-  { field: 'gpa', label: 'Gpa' },
 ];
 
 const validationSchema = Yup.object({
-  educations: Yup.array().of(
+  workExperiences: Yup.array().of(
     Yup.object({
-      school: Yup.string().required('School is required'),
-      degree: Yup.string().required('Degree is required'),
+      company: Yup.string().required('Company is required'),
+      jobTitle: Yup.string().required('Job Title is required'),
       date: Yup.string().required('Date is required'),
-      gpa: Yup.string().required('GPA is required'),
       descriptions: Yup.array().of(Yup.string()),
     })
   ),
 });
 
-const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) => {
-  const [initialValues, setInitialValues] = useState<{ educations: ResumeEducation[] }>({
-    educations: [],
+const WorkExperiencesEditForm = ({ workExperiences }: { workExperiences: ResumeWorkExperience[] }) => {
+  const [initialValues, setInitialValues] = useState<{ workExperiences: ResumeWorkExperience[] }>({
+    workExperiences: [],
   });
 
   useEffect(() => {
-    if (educations) {
-      setInitialValues({ educations: deepClone(educations) });
+    if (workExperiences) {
+      setInitialValues({ workExperiences: deepClone(workExperiences) });
     }
-  }, [educations]);
+  }, [workExperiences]);
 
   return (
     <Dialog>
@@ -65,8 +63,8 @@ const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) =
       </DialogTrigger>
       <DialogContent className="min-w-[600px] max-h-[650px] overflow-auto">
         <DialogHeader>
-          <DialogTitle>Edit Education</DialogTitle>
-          <DialogDescription>Make changes to your education here. Click save when you're done.</DialogDescription>
+          <DialogTitle>Edit Work Experiences</DialogTitle>
+          <DialogDescription>Make changes to your work experiences here. Click save when you're done.</DialogDescription>
         </DialogHeader>
 
         <Formik
@@ -75,17 +73,18 @@ const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) =
           // validationSchema={validationSchema}
           onSubmit={(values) => {
             console.log('Submitted values:', values);
+           
           }}
         >
           {({ values, handleChange, handleBlur }) => (
             <Form className="space-y-2 flex flex-col">
-              <FieldArray name="educations">
+              <FieldArray name="workExperiences">
                 {({ remove, push }) => (
                   <div className="flex flex-col gap-4">
-                    {values.educations.map((_each, index) => (
+                    {values.workExperiences.map((_each, index) => (
                       <div key={index} className="flex flex-col">
                         <div className="flex gap-2 items-center mb-2">
-                          <h3 className="font-bold">Education {index + 1}</h3>
+                          <h3 className="font-bold">Experience {index + 1}</h3>
                           <Button variant="ghost" size="icon" onClick={() => remove(index)}>
                             <TrashIcon className="h-4 w-4" />
                           </Button>
@@ -96,13 +95,13 @@ const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) =
                               <Label>{item.label}</Label>
                               <div className="flex flex-col w-[85%]">
                                 <Field
-                                  name={`educations.${index}.${item.field}`}
+                                  name={`workExperiences.${index}.${item.field}`}
                                   as={Input}
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                 />
                                 <ErrorMessage
-                                  name={`educations.${index}.${item.field}`}
+                                  name={`workExperiences.${index}.${item.field}`}
                                   component="span"
                                   className="text-red-500 text-sm"
                                 />
@@ -110,15 +109,15 @@ const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) =
                             </div>
                           ))}
                         </div>
-                        <FieldArray name={`educations.${index}.descriptions`}>
+                        <FieldArray name={`workExperiences.${index}.descriptions`}>
                           {({ remove, push }) => (
                             <div className="flex flex-col gap-4 my-4">
-                              {values.educations[index].descriptions.map((_, descIndex) => (
+                              {values.workExperiences[index].descriptions.map((_, descIndex) => (
                                 <div key={descIndex} className="flex flex-col gap-2">
                                   <Label>Description {descIndex + 1}</Label>
                                   <div className="flex gap-2">
                                     <Field
-                                      name={`educations.${index}.descriptions.${descIndex}`}
+                                      name={`workExperiences.${index}.descriptions.${descIndex}`}
                                       as={Input}
                                       onChange={handleChange}
                                       onBlur={handleBlur}
@@ -150,11 +149,11 @@ const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) =
                     ))}
                     <Button
                       type="button"
-                      onClick={() => push({ school: '', degree: '', date: '', gpa: '', descriptions: [] })}
+                      onClick={() => push({ company: '', jobTitle: '', date: '', descriptions: [] })}
                       className="w-fit mx-auto"
                       variant="secondary"
                     >
-                      Add Education
+                      Add Experience
                     </Button>
                   </div>
                 )}
@@ -170,4 +169,4 @@ const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) =
   );
 };
 
-export default EducationsEditForm;
+export default WorkExperiencesEditForm;
