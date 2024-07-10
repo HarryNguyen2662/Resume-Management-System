@@ -9,14 +9,11 @@ import ResumePdfViewer from './components/resume-pdf-viewer';
 const ResumeDetails = () => {
   const { id: resumeId } = useParams();
 
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
   const { data: resume, isSuccess } = useGetResumeByIdQuery(resumeId!);
 
   if (!isSuccess) {
     return <div>Loading...</div>;
   }
-
-  console.log(resume);
 
   return (
     <div className="flex w-full overflow-hidden">

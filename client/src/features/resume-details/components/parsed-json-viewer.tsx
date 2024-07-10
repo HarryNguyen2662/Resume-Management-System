@@ -1,12 +1,9 @@
 import type { Resume } from 'lib/redux/types';
 
-import { Pencil2Icon } from '@radix-ui/react-icons';
 import { cx } from 'lib/cx';
 import { deepClone } from 'lib/deep-clone';
 import { initialEducation, initialWorkExperience } from 'lib/redux/resumeSlice';
 import { Fragment } from 'react';
-
-import { Button } from '@/components/ui/button';
 
 import EducationsEditForm from './JsonEditForm/EducationsEditForm';
 import ProfileEditForm from './JsonEditForm/ProfileEditForm';
