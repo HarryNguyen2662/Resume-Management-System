@@ -1,4 +1,4 @@
-import type { Resume, ResumeEducation, ResumeProfile, ResumeProject } from '@/interface/resume';
+import type { Resume, ResumeEducation, ResumeProfile, ResumeProject, ResumeWorkExperience } from '@/interface/resume';
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -22,6 +22,11 @@ interface EditEucation {
 
 interface EditProjects {
   projects: ResumeProject[];
+  id: string;
+}
+
+interface EditWorkExperiences {
+  workExperiences: ResumeWorkExperience[];
   id: string;
 }
 
@@ -80,7 +85,7 @@ export const apiSlice = createApi({
 
     getResumeById: builder.query<Resume, string>({
       query: resumeId => `/resume/${resumeId}`,
-      providesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg }]
+      providesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg }],
     }),
 
     deleteResumeById: builder.mutation<void, string>({
@@ -97,7 +102,7 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: { profile },
       }),
-      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }]
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
     }),
 
     updateEducationById: builder.mutation<EditResumeResults, EditEucation>({
@@ -106,7 +111,7 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: { educations },
       }),
-      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }]
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
     }),
 
     updateProjectsById: builder.mutation<EditResumeResults, EditProjects>({
@@ -115,7 +120,16 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: { projects },
       }),
-      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }]
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
+    }),
+
+    updateWorkExperiencesById: builder.mutation<EditResumeResults, EditWorkExperiences>({
+      query: ({ workExperiences, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { workExperiences },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
     }),
   }),
 });
@@ -128,5 +142,6 @@ export const {
   useGetResumesbyPagesQuery,
   useUpdateProfileByIdMutation,
   useUpdateEducationByIdMutation,
-  useUpdateProjectsByIdMutation
+  useUpdateProjectsByIdMutation,
+  useUpdateWorkExperiencesByIdMutation
 } = apiSlice;
