@@ -1,9 +1,18 @@
 import type { Resume } from 'lib/redux/types';
 
+import { Pencil2Icon } from '@radix-ui/react-icons';
 import { cx } from 'lib/cx';
 import { deepClone } from 'lib/deep-clone';
 import { initialEducation, initialWorkExperience } from 'lib/redux/resumeSlice';
 import { Fragment } from 'react';
+
+import { Button } from '@/components/ui/button';
+
+import EducationsEditForm from './JsonEditForm/EducationsEditForm';
+import ProfileEditForm from './JsonEditForm/ProfileEditForm';
+import ProjectsEditForm from './JsonEditForm/ProjectsEditForm';
+import SkillsEditForm from './JsonEditForm/SkillsEditForm';
+import WorkExperiencesEditForm from './JsonEditForm/WorkExperiencesEditForm';
 
 const TableRowHeader = ({ children }: { children: React.ReactNode }) => (
   <tr className="divide-x bg-gray-50 text-lg font-semibold mb-2">
@@ -63,7 +72,12 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
     <table className="text-sm text-gray-900 border-solid border-2 border-slate-400">
       <tbody className="divide-y text-left align-top">
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
-          <TableRowHeader>Profile</TableRowHeader>
+          <TableRowHeader>
+            <div className="flex justify-between items-center">
+              <p>Profile</p>
+              <ProfileEditForm profile={resume.profile} />
+            </div>
+          </TableRowHeader>
           <TableRow label="Name" value={resume.profile.name} />
           <TableRow label="Email" value={resume.profile.email} />
           <TableRow label="Phone" value={resume.profile.phone} />
@@ -72,7 +86,12 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           <TableRow label="Summary" value={resume.profile.summary} />
         </div>
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
-          <TableRowHeader>Education</TableRowHeader>
+          <TableRowHeader>
+            <div className="flex justify-between items-center">
+              <p>Education</p>
+              <EducationsEditForm educations={resume.educations} />
+            </div>
+          </TableRowHeader>
           {educations.map((education, idx) => (
             <Fragment key={idx}>
               <TableRow label="School" value={education.school} />
@@ -88,7 +107,12 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           ))}
         </div>
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
-          <TableRowHeader>Work Experience</TableRowHeader>
+          <TableRowHeader>
+            <div className="flex justify-between items-center">
+              <p>Work Experience</p>
+              <WorkExperiencesEditForm workExperiences={resume.workExperiences} />
+            </div>
+          </TableRowHeader>
           {workExperiences.map((workExperience, idx) => (
             <Fragment key={idx}>
               <TableRow label="Company" value={workExperience.company} />
@@ -103,7 +127,14 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           ))}
         </div>
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
-          {resume.projects.length > 0 && <TableRowHeader>Projects</TableRowHeader>}
+          {resume.projects.length > 0 && (
+            <TableRowHeader>
+              <div className="flex justify-between items-center">
+                <p>Projects</p>
+                <ProjectsEditForm projects={resume.projects} />
+              </div>
+            </TableRowHeader>
+          )}
           {resume.projects.map((project, idx) => (
             <Fragment key={idx}>
               <TableRow label="Project" value={project.project} />
@@ -117,7 +148,12 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           ))}
         </div>
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
-          <TableRowHeader>Skills</TableRowHeader>
+          <TableRowHeader>
+            <div className="flex justify-between items-center">
+              <p>Skills</p>
+              <SkillsEditForm skills={resume.skills} />
+            </div>
+          </TableRowHeader>
           <TableRow label="Descriptions" value={skills} />
         </div>
       </tbody>
