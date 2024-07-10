@@ -1,4 +1,4 @@
-import type { Resume, ResumeEducation, ResumeProfile } from '@/interface/resume';
+import type { Resume, ResumeEducation, ResumeProfile, ResumeProject } from '@/interface/resume';
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -17,6 +17,11 @@ interface EditProfile {
 
 interface EditEucation {
   educations: ResumeEducation[];
+  id: string;
+}
+
+interface EditProjects {
+  projects: ResumeProject[];
   id: string;
 }
 
@@ -103,6 +108,15 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }]
     }),
+
+    updateProjectsById: builder.mutation<EditResumeResults, EditProjects>({
+      query: ({ projects, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { projects },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }]
+    }),
   }),
 });
 
@@ -114,4 +128,5 @@ export const {
   useGetResumesbyPagesQuery,
   useUpdateProfileByIdMutation,
   useUpdateEducationByIdMutation,
+  useUpdateProjectsByIdMutation
 } = apiSlice;
