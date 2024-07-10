@@ -108,6 +108,28 @@ const getResumeListbyPage = async (options) => {
   };
 };
 
+const getResumesByKeywords = async (options, keywords) => {
+  const page = options.page;
+  const limit = options.limit;
+  const resume = await Resume.find(
+    {
+      $text: { $search: keywords.join(' ') },
+    },
+    null,
+    options
+  );
+
+  const totalResults = await Resume.countDocuments({
+    $text: { $search: keywords.join(' ') },
+  });
+
+  return {
+    resume,
+    currentPage: parseInt(page, 10),
+    totalPages: Math.ceil(totalResults / limit),
+  };
+};
+
 module.exports = {
   createResume,
   getResumeById,
@@ -115,4 +137,5 @@ module.exports = {
   getResumeAll,
   getResumeListbyPage,
   updateResumeById,
+  getResumesByKeywords,
 };

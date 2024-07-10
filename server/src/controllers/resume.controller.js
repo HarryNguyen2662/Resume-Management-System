@@ -50,6 +50,29 @@ const getResumeByPage = catchAsync(async (req, res) => {
   res.send(resume);
 });
 
+const getResumesByKeywords = catchAsync(async (req, res) => {
+  const params = pick(req.query, ['limit', 'page']);
+  const keywords = pick(req.query, ['keywords'])
+    .keywords.split(',')
+    .map((k) => k.trim())
+    .filter(Boolean);
+
+  const page = params.page;
+  const limit = params.limit;
+  const options = {
+    skip: (page - 1) * limit,
+    limit: parseInt(limit, 10),
+  };
+
+  if (!Array.isArray(keywords) || keywords.length === 0) {
+    return res.status(400).send('Keywords must be a non-empty array');
+  }
+
+  const resumes = await resumeService.getResumesByKeywords(options, keywords);
+
+  res.send(resumes);
+});
+
 module.exports = {
   createResume,
   getResumeAll,
@@ -57,4 +80,5 @@ module.exports = {
   deleteResume,
   getResumeByPage,
   updateResumeById,
+  getResumesByKeywords,
 };

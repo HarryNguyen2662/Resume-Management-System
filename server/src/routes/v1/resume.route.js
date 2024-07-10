@@ -9,8 +9,10 @@ const router = express.Router();
 
 router.route('/').post(upload.single('pdf'), resumeController.createResume);
 router.route('/').get(resumeController.getResumeAll);
+router.route('/search').get(resumeController.getResumesByKeywords);
 router.route('/resumepage').get(resumeController.getResumeByPage);
 router.route('/:resumeId').get(resumeController.getResumeById);
 router.route('/:resumeId').delete(resumeController.deleteResume);
 router.route('/:resumeId').patch(resumeController.updateResumeById);
+
 module.exports = router;
