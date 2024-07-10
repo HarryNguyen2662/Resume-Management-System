@@ -1,13 +1,54 @@
-import type { Resume } from '@/interface/resume';
+import type {
+  Resume,
+  ResumeEducation,
+  ResumeProfile,
+  ResumeProject,
+  ResumeWorkExperience,
+} from '@/interface/resume';
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+interface PaginationResumesList {
+  resume: Resume[];
+}
+
+interface EditResumeResults {
+  resume: Resume;
+}
+
+interface EditProfile {
+  profile: ResumeProfile;
+  id: string;
+}
+
+interface EditEucation {
+  educations: ResumeEducation[];
+  id: string;
+}
+
+interface EditProjects {
+  projects: ResumeProject[];
+  id: string;
+}
+
+interface EditWorkExperiences {
+  workExperiences: ResumeWorkExperience[];
+  id: string;
+}
+
+interface EditSkills {
+  skills: {
+    descriptions: string[];
+  };
+  id: string;
+}
 
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
-    getResumesbyPages: builder.query<Resume[], { limit: number; page: number }>({
+    getResumesbyPages: builder.query<PaginationResumesList, { limit: number; page: number }>({
       query: ({ limit, page }) => {
         const searchParams = new URLSearchParams();
 
@@ -21,7 +62,7 @@ export const apiSlice = createApi({
       },
       providesTags: result => [
         'Resume',
-        ...result.resume.map(({ id }: { id: string }) => ({
+        ...result!.resume.map(({ id }: { id: string }) => ({
           type: 'Resume' as const,
           id,
         })),
@@ -57,6 +98,7 @@ export const apiSlice = createApi({
 
     getResumeById: builder.query<Resume, string>({
       query: resumeId => `/resume/${resumeId}`,
+      providesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg }],
     }),
 
     deleteResumeById: builder.mutation<void, string>({
@@ -65,6 +107,51 @@ export const apiSlice = createApi({
         method: 'DELETE',
       }),
       invalidatesTags: ['Resume'],
+    }),
+
+    updateProfileById: builder.mutation<EditResumeResults, EditProfile>({
+      query: ({ profile, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { profile },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
+    }),
+
+    updateEducationById: builder.mutation<EditResumeResults, EditEucation>({
+      query: ({ educations, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { educations },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
+    }),
+
+    updateProjectsById: builder.mutation<EditResumeResults, EditProjects>({
+      query: ({ projects, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { projects },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
+    }),
+
+    updateWorkExperiencesById: builder.mutation<EditResumeResults, EditWorkExperiences>({
+      query: ({ workExperiences, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { workExperiences },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
+    }),
+
+    updateSkillsById: builder.mutation<EditResumeResults, EditSkills>({
+      query: ({ skills, id }) => ({
+        url: `/resume/${id}`,
+        method: 'PATCH',
+        body: { skills },
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
     }),
   }),
 });
@@ -75,4 +162,9 @@ export const {
   useGetResumeByIdQuery,
   useDeleteResumeByIdMutation,
   useGetResumesbyPagesQuery,
+  useUpdateProfileByIdMutation,
+  useUpdateEducationByIdMutation,
+  useUpdateProjectsByIdMutation,
+  useUpdateWorkExperiencesByIdMutation,
+  useUpdateSkillsByIdMutation,
 } = apiSlice;
