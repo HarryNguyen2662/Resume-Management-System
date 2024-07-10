@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 
 import EducationsEditForm from './JsonEditForm/EducationsEditForm';
 import ProfileEditForm from './JsonEditForm/ProfileEditForm';
+import ProjectsEditForm from './JsonEditForm/ProjectsEditForm';
+import SkillsEditForm from './JsonEditForm/SkillsEditForm';
 import WorkExperiencesEditForm from './JsonEditForm/WorkExperiencesEditForm';
 
 const TableRowHeader = ({ children }: { children: React.ReactNode }) => (
@@ -129,9 +131,7 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
             <TableRowHeader>
               <div className="flex justify-between items-center">
                 <p>Projects</p>
-                <Button variant="outline" size="icon">
-                  <Pencil2Icon className="h-4 w-4" />
-                </Button>
+                <ProjectsEditForm projects={resume.projects} />
               </div>
             </TableRowHeader>
           )}
@@ -151,9 +151,7 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           <TableRowHeader>
             <div className="flex justify-between items-center">
               <p>Skills</p>
-              <Button variant="outline" size="icon">
-                <Pencil2Icon className="h-4 w-4" />
-              </Button>
+              <SkillsEditForm skills={resume.skills} />
             </div>
           </TableRowHeader>
           <TableRow label="Descriptions" value={skills} />
