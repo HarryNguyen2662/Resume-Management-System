@@ -1,5 +1,4 @@
-import { Input } from '@/components/ui/input';
-
+import { AddNewResume } from './add-new-resume';
 import { AdvancedFilter } from './advanced-filters';
 
 interface HeaderProps {
@@ -16,6 +15,7 @@ export const Header = ({ filterOptions, setFilterOptions }: HeaderProps) => {
           <p className="text-slate-400">List of resumes on the platform</p>
           <div className="flex w-full max-w-sm items-center justify-end space-x-2">
             {/* <Input placeholder="Search..." /> */}
+            <AddNewResume />
             <AdvancedFilter filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
           </div>
         </div>

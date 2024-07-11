@@ -55,3 +55,5 @@ export interface Resume {
   };
   id: string;
 }
+
+export type ResumeKey = keyof Resume;

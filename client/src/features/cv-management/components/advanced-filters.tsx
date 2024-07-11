@@ -43,7 +43,7 @@ export const AdvancedFilter = ({ filterOptions, setFilterOptions }: AdvancedFilt
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary" className='w-fit'>
+        <Button className='w-fit'>
           Filter <CaretDownIcon className="ml-2 h-4 w-4" />
         </Button>
       </PopoverTrigger>

@@ -126,8 +126,8 @@ export const AddNewResume = () => {
       <Dialog>
         <DialogTrigger asChild>
           <Button
+            variant="secondary"
             onClick={() => {
-              console.log(isOpen);
               setIsOpen(true);
             }}
           >
