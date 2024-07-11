@@ -3,11 +3,10 @@ import type { ResumeSkills } from 'lib/redux/types';
 import { View } from '@react-pdf/renderer';
 
 import {
-  ResumeFeaturedSkill,
   ResumePDFBulletList,
   ResumePDFSection,
 } from './common';
-import { spacing,styles } from './styles';
+import { styles } from './styles';
 
 export const ResumePDFSkills = ({
   heading,
@@ -20,7 +19,7 @@ export const ResumePDFSkills = ({
   themeColor: string;
   showBulletPoints: boolean;
 }) => {
-  const { descriptions, featuredSkills } = skills;
+  const { descriptions } = skills;
   // const featuredSkillsWithText = featuredSkills.filter((item) => item.skill);
   // const featuredSkillsPair = [
   //   [featuredSkillsWithText[0], featuredSkillsWithText[3]],

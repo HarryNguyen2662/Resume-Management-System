@@ -5,8 +5,8 @@ import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import { deepClone } from 'lib/deep-clone';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
+// import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -37,17 +37,17 @@ const formFields: formFieldType[] = [
   { field: 'gpa', label: 'Gpa' },
 ];
 
-const validationSchema = Yup.object({
-  educations: Yup.array().of(
-    Yup.object({
-      school: Yup.string().required('School is required'),
-      degree: Yup.string().required('Degree is required'),
-      date: Yup.string().required('Date is required'),
-      gpa: Yup.string().required('GPA is required'),
-      descriptions: Yup.array().of(Yup.string()),
-    }),
-  ),
-});
+// const validationSchema = Yup.object({
+//   educations: Yup.array().of(
+//     Yup.object({
+//       school: Yup.string().required('School is required'),
+//       degree: Yup.string().required('Degree is required'),
+//       date: Yup.string().required('Date is required'),
+//       gpa: Yup.string().required('GPA is required'),
+//       descriptions: Yup.array().of(Yup.string()),
+//     }),
+//   ),
+// });
 
 const EducationsEditForm = ({ educations }: { educations: ResumeEducation[] }) => {
   const [updateEducation, { isLoading }] = useUpdateEducationByIdMutation();

@@ -50,12 +50,12 @@ export const AdvancedFilter = ({ filterOptions, setFilterOptions }: AdvancedFilt
       <PopoverContent className="w-[500px]" align="end">
         <div className="flex flex-col">
           <div className="flex flex-col">
-            <h2 className="font-bold text-lg">Keyword</h2>
+            <h2 className="font-bold text-lg">Search Resumes</h2>
             <Separator className="my-4" />
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex w-full items-center space-x-2">
-              <Input placeholder="Add a keyword" value={keyword} onChange={({ target }) => setKeyword(target.value)} />
+              <Input placeholder="Filtering by keywords: java, AWS, senior, etc." value={keyword} onChange={({ target }) => setKeyword(target.value)} />
               <Button onClick={handleAddClick}>Add</Button>
             </div>
             <Separator />
