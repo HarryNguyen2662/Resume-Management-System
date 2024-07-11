@@ -1,5 +1,5 @@
 import type { Resume } from '@/interface/resume';
-import { useDeleteResumeByIdMutation } from '@/services/apiSlice';
+import type { FormEvent } from 'react';
 
 import { ChevronRightIcon, TrashIcon } from '@radix-ui/react-icons';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import type { FormEvent } from 'react';
+import { useDeleteResumeByIdMutation } from '@/services/apiSlice';
 
 interface ResumePreviewCardProps {
   resume: Resume;

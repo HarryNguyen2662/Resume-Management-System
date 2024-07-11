@@ -27,8 +27,12 @@ const FilterTag = ({ option, setFilterOptions, filterOptions }: FilterTagProps) 
   );
 };
 
-export const AdvancedFilter = () => {
-  const [filterOptions, setFilterOptions] = useState<string[]>([]);
+interface AdvancedFilterProps {
+  setFilterOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  filterOptions: string[];
+}
+
+export const AdvancedFilter = ({ filterOptions, setFilterOptions }: AdvancedFilterProps) => {
   const [keyword, setKeyword] = useState('');
 
   const handleAddClick = () => {
@@ -65,7 +69,6 @@ export const AdvancedFilter = () => {
             <Button variant="outline" onClick={() => setFilterOptions([])}>
               Clear
             </Button>
-            <Button type="submit">Save</Button>
           </div>
         </DialogFooter>
       </DialogContent>
