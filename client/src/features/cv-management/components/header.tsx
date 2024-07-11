@@ -14,8 +14,8 @@ export const Header = ({ filterOptions, setFilterOptions }: HeaderProps) => {
         <h1 className="font-bold text-4xl">CoderPush</h1>
         <div className="flex justify-between items-center">
           <p className="text-slate-400">List of resumes on the platform</p>
-          <div className="flex w-full max-w-sm items-center space-x-2">
-            <Input placeholder="Search..." />
+          <div className="flex w-full max-w-sm items-center justify-end space-x-2">
+            {/* <Input placeholder="Search..." /> */}
             <AdvancedFilter filterOptions={filterOptions} setFilterOptions={setFilterOptions} />
           </div>
         </div>
