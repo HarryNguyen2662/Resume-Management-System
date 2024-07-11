@@ -1,5 +1,3 @@
-import type { Resume } from '@/interface/resume';
-
 import { useState } from 'react';
 
 import {
@@ -13,7 +11,7 @@ import {
 } from '@/components/ui/pagination';
 import { useGetResumesbyPagesQuery } from '@/services/apiSlice';
 
-import { ResumePreviewCard } from './resume-preview-card';
+import { ResumesTable } from './resumes-table';
 
 interface PaginationSelectionProps {
   total: number;
@@ -105,7 +103,7 @@ export const ResumesListBoard = ({ filterOptions }: ResumesListBoardProps) => {
   const { data, isError, error, isLoading, isSuccess } = useGetResumesbyPagesQuery({
     page: currentPage,
     limit: itemsPerPage,
-    keywords: filterOptions
+    keywords: filterOptions,
   });
 
   let content;
@@ -114,16 +112,14 @@ export const ResumesListBoard = ({ filterOptions }: ResumesListBoardProps) => {
   if (isLoading) {
     content = <p>Loading...</p>;
   } else if (isSuccess) {
-    content = resumes.map((resume: Resume) => <ResumePreviewCard key={resume.id} resume={resume} />);
+    content = <ResumesTable resumes={resumes} />;
   } else if (isError) {
     content = <div>{error.toString()}</div>;
   }
 
   return (
     <div className="flex flex-col gap-5 mb-3">
-      <div className="h-[530px] grid grid-cols-3 gap-4 border-solid border-2 border-slate-400 rounded-xl p-4 overflow-auto">
-        {content}
-      </div>
+      <div className="h-[530px] border-solid border-2 border-slate-400 rounded-xl p-4 overflow-auto">{content}</div>
       <PaginationSelection
         total={data?.totalCount ? data?.totalCount : 0}
         itemsPerPage={itemsPerPage}

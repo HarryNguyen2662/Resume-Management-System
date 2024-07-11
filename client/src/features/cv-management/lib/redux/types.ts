@@ -49,9 +49,6 @@ export interface Resume {
   projects: ResumeProject[];
   skills: ResumeSkills;
   custom: ResumeCustom;
-  resumePdf: {
-    fileUrl: string;
-    cloudinaryId: string;
-  };
-  id: string;
 }
+
+export type ResumeKey = keyof Resume;

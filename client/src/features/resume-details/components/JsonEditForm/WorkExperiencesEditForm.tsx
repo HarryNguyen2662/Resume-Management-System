@@ -5,8 +5,8 @@ import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import { deepClone } from 'lib/deep-clone';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
+// import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -36,16 +36,16 @@ const formFields: formFieldType[] = [
   { field: 'date', label: 'Date' },
 ];
 
-const validationSchema = Yup.object({
-  workExperiences: Yup.array().of(
-    Yup.object({
-      company: Yup.string().required('Company is required'),
-      jobTitle: Yup.string().required('Job Title is required'),
-      date: Yup.string().required('Date is required'),
-      descriptions: Yup.array().of(Yup.string()),
-    }),
-  ),
-});
+// const validationSchema = Yup.object({
+//   workExperiences: Yup.array().of(
+//     Yup.object({
+//       company: Yup.string().required('Company is required'),
+//       jobTitle: Yup.string().required('Job Title is required'),
+//       date: Yup.string().required('Date is required'),
+//       descriptions: Yup.array().of(Yup.string()),
+//     }),
+//   ),
+// });
 
 const WorkExperiencesEditForm = ({ workExperiences }: { workExperiences: ResumeWorkExperience[] }) => {
   const [updateProjects, { isLoading }] = useUpdateWorkExperiencesByIdMutation();

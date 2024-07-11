@@ -5,8 +5,8 @@ import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import { deepClone } from 'lib/deep-clone';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
+// import * as Yup from 'yup';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -35,15 +35,15 @@ const formFields: formFieldType[] = [
   { field: 'date', label: 'Date' },
 ];
 
-const validationSchema = Yup.object({
-  projects: Yup.array().of(
-    Yup.object({
-      project: Yup.string().required('Project is required'),
-      date: Yup.string().required('Date is required'),
-      descriptions: Yup.array().of(Yup.string()),
-    }),
-  ),
-});
+// const validationSchema = Yup.object({
+//   projects: Yup.array().of(
+//     Yup.object({
+//       project: Yup.string().required('Project is required'),
+//       date: Yup.string().required('Date is required'),
+//       descriptions: Yup.array().of(Yup.string()),
+//     }),
+//   ),
+// });
 
 const ProjectsEditForm = ({ projects }: { projects: ResumeProject[] }) => {
   const [updateProjects, { isLoading }] = useUpdateProjectsByIdMutation();
