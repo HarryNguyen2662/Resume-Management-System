@@ -92,19 +92,51 @@ const getResumeById = async (resumeId) => {
  * @param {number} limit
  * @returns {Promise<Resume>}
  */
-const getResumeListbyPage = async (options) => {
-  page = Number.parseInt(options.page);
-  limit = Number.parseInt(options.limit);
-  const totalCount = await Resume.countDocuments({});
-  const totalPages = Math.ceil(totalCount / limit);
-  const skip = (page - 1) * limit;
+// const getResumeListbyPage = async (options) => {
+//   page = Number.parseInt(options.page);
+//   limit = Number.parseInt(options.limit);
+//   const totalCount = await Resume.countDocuments({});
+//   const totalPages = Math.ceil(totalCount / limit);
+//   const skip = (page - 1) * limit;
 
-  const resume = await Resume.find({}).skip(skip).limit(limit).exec();
+//   const resume = await Resume.find({}).skip(skip).limit(limit).exec();
+//   return {
+//     resume,
+//     currentPage: page,
+//     totalPages,
+//     totalCount,
+//   };
+// };
+
+const getResumes = async (options, keywords) => {
+  const page = options.page;
+  const limit = options.limit;
+
+  let resume;
+  let totalCount;
+
+  if (keywords.length === 0) {
+    resume = await Resume.find({}, null, options);
+    totalCount = await Resume.countDocuments({});
+  } else {
+    resume = await Resume.find(
+      {
+        $text: { $search: keywords.join(' ') },
+      },
+      null,
+      options
+    );
+    totalCount = await Resume.countDocuments({
+      $text: { $search: keywords.join(' ') },
+    });
+  }
+
+
   return {
     resume,
-    currentPage: page,
-    totalPages,
-    totalCount,
+    currentPage: parseInt(page, 10),
+    totalPages: Math.ceil(totalCount / limit),
+    totalCount
   };
 };
 
@@ -113,6 +145,6 @@ module.exports = {
   getResumeById,
   deleteResumeById,
   getResumeAll,
-  getResumeListbyPage,
   updateResumeById,
+  getResumes,
 };

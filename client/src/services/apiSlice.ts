@@ -10,6 +10,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface PaginationResumesList {
   resume: Resume[];
+  totalCount: number;
 }
 
 interface EditResumeResults {
@@ -48,15 +49,16 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
-    getResumesbyPages: builder.query<PaginationResumesList, { limit: number; page: number }>({
-      query: ({ limit, page }) => {
+    getResumesbyPages: builder.query<PaginationResumesList, { keywords: any[] ;limit: number; page: number }>({
+      query: ({ keywords, limit, page }) => {
         const searchParams = new URLSearchParams();
 
         searchParams.set('limit', limit.toString());
         searchParams.set('page', page.toString());
+        searchParams.set('keywords', keywords.join(',').toString());
 
         return {
-          url: `/resume/resumepage?${searchParams.toString()}`,
+          url: `/resume?${searchParams.toString()}`,
           method: 'GET',
         };
       },

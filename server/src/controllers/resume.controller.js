@@ -44,10 +44,24 @@ const deleteResume = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-const getResumeByPage = catchAsync(async (req, res) => {
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const resume = await resumeService.getResumeListbyPage(options);
-  res.send(resume);
+
+const getResumes = catchAsync(async (req, res) => {
+  const params = pick(req.query, ['limit', 'page']);
+  const keywords = pick(req.query, ['keywords'])
+    .keywords.split(',')
+    .map((k) => k.trim())
+    .filter(Boolean);
+
+  const page = params.page;
+  const limit = params.limit;
+  const options = {
+    skip: (page - 1) * limit,
+    limit: parseInt(limit, 10),
+  };
+
+  const resumes = await resumeService.getResumes(options, keywords);
+
+  res.send(resumes);
 });
 
 module.exports = {
@@ -55,6 +69,6 @@ module.exports = {
   getResumeAll,
   getResumeById,
   deleteResume,
-  getResumeByPage,
   updateResumeById,
+  getResumes,
 };

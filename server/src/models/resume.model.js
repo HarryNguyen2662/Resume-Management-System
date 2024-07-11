@@ -60,6 +60,22 @@ const resumeSchema = mongoose.Schema(
   }
 );
 
+resumeSchema.index({
+  'profile.name': 'text',
+  'profile.email': 'text',
+  'profile.location': 'text',
+  'profile.summmary': 'text',
+  'educations.school': 'text',
+  'educations.degree': 'text',
+  'workExperiences.company': 'text',
+  'workExperiences.jobTitle': 'text',
+  'workExperiences.descriptions': 'text',
+  'projects.descriptions': 'text',
+  'skills.descriptions': 'text',
+  'skills.featuredSkill.skill': 'text',
+  'custom.descriptions': 'text'
+});
+
 // add plugin that converts mongoose to json
 resumeSchema.plugin(toJSON);
 resumeSchema.plugin(paginate);
