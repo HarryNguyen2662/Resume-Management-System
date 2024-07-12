@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
 import {
-  useSyncGoogleDriveMutation,
+  //useSyncGoogleDriveMutation,
   useUploadNewResumeMutation,
   useUploadNewResumetoGoogleDriveMutation,
 } from '@/services/apiSlice';
@@ -40,15 +40,16 @@ let token_response = 'coderpush';
 
 const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZoneProps) => {
   const [files, setFiles] = useState(defaultFileState);
-  const [openPicker, authResponse] = useDrivePicker();
-  const [syncGoogleDrive] = useSyncGoogleDriveMutation();
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [isSyncEnabled, setIsSyncEnabled] = useState(false);
+  const [openPicker] = useDrivePicker();
+  //const [syncGoogleDrive] = useSyncGoogleDriveMutation();
 
-  const toggleSync = () => {
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  //const [isSyncEnabled, setIsSyncEnabled] = useState(false);
+
+  /*const toggleSync = () => {
     if (isSyncEnabled === false) handleSyncWithGoogleDrive;
     setIsSyncEnabled(!isSyncEnabled);
-  };
+  };*/
 
   const setNewFiles = (newFiles: File[]) => {
     // biome-ignore lint/complexity/noForEach: <explanation>
@@ -70,7 +71,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
     onFileUrlsChange(updatedFiles.map(file => file.fileUrl));
   };
 
-  const downloadFileFromGoogleDrive = async (driveUrl: string, fileName: string, id: string) => {
+  const downloadFileFromGoogleDrive = async (fileName: string, id: string) => {
     try {
       // Update the fetch URL to point to your server-side proxy endpoint
       const serverEndpoint = `http://localhost:3000/v1/resumePDF/downloadFileFromGoogleDrive/${encodeURIComponent(id)}`;
@@ -141,6 +142,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
 
       googleSignInWindow?.close();
       setIsPickerOpen(true);
+      console.log(isPickerOpen);
       setOpen(false);
       openPicker({
         clientId: '579506460829-rojvfppgli45e7h6lvfjbtodsgil1vnd.apps.googleusercontent.com',
@@ -169,11 +171,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
             const myArray = [];
 
             for (let i = 0; i < selectedFiles.length; i++) {
-              const file = await downloadFileFromGoogleDrive(
-                selectedFiles[i].url,
-                selectedFiles[i].name,
-                selectedFiles[i].id,
-              );
+              const file = await downloadFileFromGoogleDrive(selectedFiles[i].name, selectedFiles[i].id);
 
               if (file) {
                 myArray.push(file);
