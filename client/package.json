@@ -37,6 +37,7 @@
     "pdfjs-dist": "^3.7.107",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-google-drive-picker": "^1.2.2",
     "react-hook-form": "^7.52.1",
     "react-pdf": "^9.1.0",
     "react-redux": "^9.1.2",

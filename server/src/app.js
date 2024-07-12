@@ -13,6 +13,7 @@ const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
+const session = require('express-session');
 
 const app = express();
 
@@ -20,6 +21,26 @@ if (config.env !== 'test') {
   app.use(morgan.successHandler);
   app.use(morgan.errorHandler);
 }
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || ['http://localhost:5173'].indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Reflect the request origin, as credentials are included
+};
+
+app.use(
+  session({
+    secret: 'coderpush2024intern', // Thay thế 'secret key' bằng một chuỗi bí mật của riêng bạn
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Đặt thành true nếu bạn đang sử dụng HTTPS
+  })
+);
 
 // set security HTTP headers
 app.use(helmet());
@@ -38,7 +59,7 @@ app.use(mongoSanitize());
 app.use(compression());
 
 // enable cors
-app.use(cors());
+app.use(cors(corsOptions));
 app.options('*', cors());
 
 // jwt authentication

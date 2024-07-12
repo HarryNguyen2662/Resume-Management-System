@@ -3,14 +3,19 @@ import type { FormEvent } from 'react';
 
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
+import useDrivePicker from 'react-google-drive-picker';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Toaster } from '@/components/ui/toaster'
-import { useToast } from '@/components/ui/use-toast'
-import { useUploadNewResumeMutation } from '@/services/apiSlice';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  useSyncGoogleDriveMutation,
+  useUploadNewResumeMutation,
+  useUploadNewResumetoGoogleDriveMutation,
+} from '@/services/apiSlice';
 
 import { extractResumeFromSections } from '../lib/parse-resume-from-pdf/extract-resume-from-sections';
 import { groupLinesIntoSections } from '../lib/parse-resume-from-pdf/group-lines-into-sections';
@@ -28,10 +33,22 @@ const defaultFileState = [
 interface ResumeInputZoneProps {
   setPdfs: React.Dispatch<React.SetStateAction<File[]>>;
   onFileUrlsChange: (fileUrls: string[]) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ResumeInputZone = ({ onFileUrlsChange, setPdfs }: ResumeInputZoneProps) => {
+let token_response = 'coderpush';
+
+const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZoneProps) => {
   const [files, setFiles] = useState(defaultFileState);
+  const [openPicker, authResponse] = useDrivePicker();
+  const [syncGoogleDrive] = useSyncGoogleDriveMutation();
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isSyncEnabled, setIsSyncEnabled] = useState(false);
+
+  const toggleSync = () => {
+    if (isSyncEnabled === false) handleSyncWithGoogleDrive;
+    setIsSyncEnabled(!isSyncEnabled);
+  };
 
   const setNewFiles = (newFiles: File[]) => {
     // biome-ignore lint/complexity/noForEach: <explanation>
@@ -53,6 +70,125 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs }: ResumeInputZoneProps) =>
     onFileUrlsChange(updatedFiles.map(file => file.fileUrl));
   };
 
+  const downloadFileFromGoogleDrive = async (driveUrl: string, fileName: string, id: string) => {
+    try {
+      // Update the fetch URL to point to your server-side proxy endpoint
+      const serverEndpoint = `http://localhost:3000/v1/resumePDF/downloadFileFromGoogleDrive/${encodeURIComponent(id)}`;
+      const response = await fetch(serverEndpoint);
+
+      if (!response.ok) throw new Error('Network response was not ok.');
+
+      const data = await response.blob();
+      const file = new File([data], fileName, { type: 'application/pdf' });
+
+      return file;
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      return null;
+    }
+  };
+
+  const handleSyncWithGoogleDrive = async () => {
+    const googleSignInWindow = window.open(
+      'http://localhost:3000/v1/resumePDF/auth/google',
+      'googleSignIn',
+      'width=500,height=600',
+    );
+
+    while (token_response === 'coderpush') {
+      try {
+        const response = await fetch('http://localhost:3000/v1/resumePDF/google/token', {
+          credentials: 'include',
+        });
+        const { token } = await response.json();
+
+        if (token !== null) {
+          googleSignInWindow?.close();
+          token_response = token;
+          break;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    googleSignInWindow?.close();
+  };
+
+  const handleOpenPicker = async () => {
+    try {
+      const googleSignInWindow = window.open(
+        'http://localhost:3000/v1/resumePDF/auth/google',
+        'googleSignIn',
+        'width=500,height=600',
+      );
+
+      while (token_response === 'coderpush') {
+        try {
+          const response = await fetch('http://localhost:3000/v1/resumePDF/google/token', {
+            credentials: 'include',
+          });
+          const { token } = await response.json();
+
+          if (token !== null) {
+            googleSignInWindow?.close();
+            token_response = token;
+            break;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      googleSignInWindow?.close();
+      setIsPickerOpen(true);
+      setOpen(false);
+      openPicker({
+        clientId: '579506460829-rojvfppgli45e7h6lvfjbtodsgil1vnd.apps.googleusercontent.com',
+        developerKey: 'AIzaSyCgMmU-U93Gjym5NOHs2yGSWbwEe7d_afM',
+        viewId: 'DOCS',
+        token: token_response, // Use the dynamically obtained token
+        showUploadView: true,
+        showUploadFolders: true,
+        supportDrives: true,
+        multiselect: true,
+        callbackFunction: async data => {
+          if (data.action === 'cancel') {
+            console.log('User clicked cancel/close button');
+            setOpen(true);
+          } else if (data.docs) {
+            const selectedFiles = data.docs.map(doc => ({
+              url: doc.url,
+              name: doc.name,
+              mimeType: doc.mimeType,
+              id: doc.id,
+            }));
+
+            setOpen(true);
+            console.log(selectedFiles);
+
+            const myArray = [];
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+              const file = await downloadFileFromGoogleDrive(
+                selectedFiles[i].url,
+                selectedFiles[i].name,
+                selectedFiles[i].id,
+              );
+
+              if (file) {
+                myArray.push(file);
+              }
+            }
+
+            setNewFiles(myArray);
+          }
+        },
+      });
+    } catch (error) {
+      console.error('Failed to open the picker due to an error:', error);
+    }
+  };
+
   const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
@@ -63,8 +199,24 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs }: ResumeInputZoneProps) =>
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="resume">Resume</Label>
-      <Input id="resume" type="file" onChange={onInputChange} multiple /> {/* Add multiple attribute */}
+      <Label htmlFor="resume1">Upload from local device</Label>
+      <Input id="resume2" type="file" onChange={onInputChange} multiple />
+      <Label htmlFor="resume3">Import from Google Drive</Label>
+      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+      <button
+        onClick={() => handleOpenPicker()}
+        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Choose Files
+      </button>
+      <Label htmlFor="resume4">Upload from local device and sync with Google Drive</Label>
+      {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+      <button
+        onClick={() => handleSyncWithGoogleDrive()}
+        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Sync with Google Drive
+      </button>
     </div>
   );
 };
@@ -77,8 +229,10 @@ export const AddNewResume = () => {
   const lines = textItems.map(items => groupTextItemsIntoLines(items || []));
   const sections = lines.map(line => groupLinesIntoSections(line));
   const jsonData = sections.map(section => extractResumeFromSections(section));
+  const [uploadFileGoogleDrive] = useUploadNewResumetoGoogleDriveMutation();
   const [isOpen, setIsOpen] = useState(true);
-  
+  const [open, setOpen] = useState(false);
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,6 +260,12 @@ export const AddNewResume = () => {
     if (canSave && pdfs.length && jsonData.every(data => Boolean(data))) {
       try {
         for (let i = 0; i < pdfs.length; i++) {
+          if (token_response !== 'coderpush') {
+            await uploadFileGoogleDrive({
+              pdf: pdfs[i],
+              jsonData: jsonData[i],
+            }).unwrap();
+          }
           await uploadFile({ pdf: pdfs[i], jsonData: jsonData[i] }).unwrap();
         }
       } catch (err) {
@@ -118,16 +278,16 @@ export const AddNewResume = () => {
       title: 'Successful!',
       description: 'The resumes have been uploaded.',
       className: 'bg-green-200',
-    })
+    });
   };
 
   return (
     <div className="flex justify-center">
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
-            variant="secondary"
             onClick={() => {
+              console.log(isOpen);
               setIsOpen(true);
             }}
           >
@@ -139,7 +299,7 @@ export const AddNewResume = () => {
             <DialogHeader>
               <DialogTitle>Upload new resume</DialogTitle>
             </DialogHeader>
-            <ResumeInputZone setPdfs={setPdfs} onFileUrlsChange={setFileUrls} />
+            <ResumeInputZone setPdfs={setPdfs} onFileUrlsChange={setFileUrls} setOpen={setOpen} />
             <DialogFooter>
               {isLoading ? (
                 <Button disabled>

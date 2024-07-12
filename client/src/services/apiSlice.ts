@@ -1,10 +1,4 @@
-import type {
-  Resume,
-  ResumeEducation,
-  ResumeProfile,
-  ResumeProject,
-  ResumeWorkExperience,
-} from '@/interface/resume';
+import type { Resume, ResumeEducation, ResumeProfile, ResumeProject, ResumeWorkExperience } from '@/interface/resume';
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -49,7 +43,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
-    getResumesbyPages: builder.query<PaginationResumesList, { keywords: any[] ;limit: number; page: number }>({
+    getResumesbyPages: builder.query<PaginationResumesList, { keywords: any[]; limit: number; page: number }>({
       query: ({ keywords, limit, page }) => {
         const searchParams = new URLSearchParams();
 
@@ -85,7 +79,7 @@ export const apiSlice = createApi({
     uploadNewResume: builder.mutation({
       query: ({ pdf, jsonData }) => {
         const formData = new FormData();
-
+        console.log(pdf);
         formData.append('pdf', pdf);
         formData.append('jsonData', JSON.stringify(jsonData));
 
@@ -155,6 +149,28 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Resume', id: arg.id }],
     }),
+
+    syncGoogleDrive: builder.mutation({
+      query: () => {
+        return { url: '/resumePDF/auth/google', method: 'GET' };
+      },
+    }),
+
+    uploadNewResumetoGoogleDrive: builder.mutation({
+      query: ({ pdf, jsonData }) => {
+        const formData = new FormData();
+
+        formData.append('pdf', pdf);
+        formData.append('jsonData', JSON.stringify(jsonData));
+
+        return {
+          url: '/resumePDF/upload',
+          method: 'POST',
+          body: formData,
+        };
+      },
+      invalidatesTags: ['Resume'],
+    }),
   }),
 });
 
@@ -169,4 +185,6 @@ export const {
   useUpdateProjectsByIdMutation,
   useUpdateWorkExperiencesByIdMutation,
   useUpdateSkillsByIdMutation,
+  useSyncGoogleDriveMutation,
+  useUploadNewResumetoGoogleDriveMutation,
 } = apiSlice;

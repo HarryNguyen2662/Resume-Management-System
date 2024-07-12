@@ -1,18 +1,75 @@
 const httpStatus = require('http-status');
-const { ResumePDF } = require('../models');
+const { oauth2Client, google } = require('../config/googledrive');
 const ApiError = require('../utils/ApiError');
+const fs = require('node:fs');
+const { Readable } = require('node:stream');
 
-// service to upload a pdf file
-const UploadResumePDF = async (pdfFile) => {
-  // const { originalname, buffer, mimetype } = pdfFile;
-  // const file = new ResumePDF({
-  //   name: originalname,
-  //   data: buffer,
-  //   contentType: mimetype,
-  // });
-  // await file.save();
-  // return file;
-};
+async function findOrCreateFolder(folderName) {
+  const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+  // Search for the folder by name
+  let pageToken = null;
+  do {
+    const response = await drive.files.list({
+      q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
+      spaces: 'drive',
+      fields: 'nextPageToken, files(id, name)',
+      pageToken: pageToken,
+    });
+    if (response.data.files.length) {
+      // Folder exists, return its ID
+      return response.data.files[0].id;
+    }
+    pageToken = response.nextPageToken;
+  } while (pageToken);
+
+  // Folder doesn't exist, create it
+  const fileMetadata = {
+    name: folderName,
+    mimeType: 'application/vnd.google-apps.folder',
+  };
+  const folder = await drive.files.create({
+    resource: fileMetadata,
+    fields: 'id',
+  });
+
+  return folder.data.id; // Return the new folder's ID
+}
+
+async function UploadResumePDF(file) {
+  if (!file) {
+    console.log('No file uploaded');
+    return;
+  }
+
+  // Find or create the folder and get its ID
+  const folderId = await findOrCreateFolder('CoderPushresume');
+
+  const drive = google.drive({
+    version: 'v3',
+    auth: oauth2Client,
+  });
+
+  const bufferStream = new Readable({
+    read() {
+      this.push(file.buffer);
+      this.push(null); // End of stream
+    },
+  });
+
+  const res = await drive.files.create({
+    requestBody: {
+      name: file.originalname || 'default_name.pdf',
+      mimeType: 'application/pdf',
+      parents: [folderId], // Use the folder ID here
+    },
+    media: {
+      mimeType: 'application/pdf',
+      body: bufferStream,
+    },
+  });
+  return res;
+}
 
 // service to display a list of uploaded files
 const GetResumePDFList = async () => {

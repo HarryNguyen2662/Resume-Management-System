@@ -59,6 +59,8 @@
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.0.0",
     "express-rate-limit": "^5.0.0",
+    "express-session": "^1.18.0",
+    "googleapis": "^140.0.1",
     "got": "^14.4.1",
     "helmet": "^4.1.0",
     "http": "^0.0.1-security",
