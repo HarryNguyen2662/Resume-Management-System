@@ -40,7 +40,7 @@ interface EditSkills {
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/v1' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://cv-management-system.onrender.com/v1' }),
   tagTypes: ['Resume'],
   endpoints: builder => ({
     getResumesbyPages: builder.query<PaginationResumesList, { keywords: any[]; limit: number; page: number }>({
