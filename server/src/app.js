@@ -35,13 +35,10 @@ const corsOptions = {
 
 app.use(
   session({
-    secret: 'coderpush2024intern',
+    secret: 'coderpush2024intern', // Thay thế 'secret key' bằng một chuỗi bí mật của riêng bạn
     resave: false,
     saveUninitialized: true,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production', // Only use secure in production
-      sameSite: 'none', // Required for cross-site cookie
-    },
+    cookie: { secure: true }, // Đặt thành true nếu bạn đang sử dụng HTTPS
   })
 );
 
