@@ -98,24 +98,46 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
       'width=500,height=600',
     );
 
-    while (token_response === 'coderpush') {
+    const getToken = async () => {
       try {
         const response = await fetch('https://cv-management-system.onrender.com/v1/resumePDF/google/token', {
           credentials: 'include',
         });
         const { token } = await response.json();
 
-        if (token !== null) {
-          googleSignInWindow?.close();
-          token_response = token;
-          break;
-        }
+        return token;
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching token:', error);
+
+        return null;
+      }
+    };
+
+    const waitForToken = async (maxAttempts = 30, interval = 2000) => {
+      for (let i = 0; i < maxAttempts; i++) {
+        const token = await getToken();
+
+        if (token) {
+          return token;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, interval));
+      }
+
+      throw new Error('Failed to get token after maximum attempts');
+    };
+
+    try {
+      const token = await waitForToken();
+
+      token_response = token;
+    } catch (error) {
+      console.error('Failed to sync with Google Drive:', error);
+    } finally {
+      if (googleSignInWindow && !googleSignInWindow.closed) {
+        googleSignInWindow.close();
       }
     }
-
-    googleSignInWindow?.close();
   };
 
   const handleOpenPicker = async () => {
