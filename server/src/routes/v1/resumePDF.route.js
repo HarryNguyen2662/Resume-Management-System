@@ -42,6 +42,7 @@ router.route('/google/redirect').get(async (req, res) => {
 router.route('/google/token').get(async (req, res) => {
   if (req.session.tokens) {
     res.json({ token: req.session.tokens.access_token });
+    res.status(200).send('Authentication successful');
   } else {
     res.status(401).send('No authentication tokens found');
   }
