@@ -43,7 +43,7 @@ router.route('/google/token').get(async (req, res) => {
   if (req.session.tokens) {
     res.json({ token: req.session.tokens.access_token });
   } else {
-    res.status(401).send('No authentication tokens found');
+    res.status(401).json({ error: 'No authentication tokens found' });
   }
 });
 

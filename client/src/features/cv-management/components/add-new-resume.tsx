@@ -129,14 +129,11 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
 
     try {
       const token = await waitForToken();
-
       token_response = token;
     } catch (error) {
       console.error('Failed to sync with Google Drive:', error);
     } finally {
-      if (googleSignInWindow && !googleSignInWindow.closed) {
-        googleSignInWindow.close();
-      }
+      googleSignInWindow?.close();
     }
   };
 
@@ -157,8 +154,12 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
         return token;
       };
 
-      // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-      while (!(token_response = await getToken())) {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        token_response = await getToken();
+        if (token_response) {
+          break;
+        }
         await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
       }
 
