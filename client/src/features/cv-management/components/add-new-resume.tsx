@@ -43,7 +43,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
   const [openPicker] = useDrivePicker();
   //const [syncGoogleDrive] = useSyncGoogleDriveMutation();
 
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [, setIsPickerOpen] = useState(false);
   //const [isSyncEnabled, setIsSyncEnabled] = useState(false);
 
   /*const toggleSync = () => {
