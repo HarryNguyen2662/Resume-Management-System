@@ -75,7 +75,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
   const downloadFileFromGoogleDrive = async (fileName: string, id: string) => {
     try {
       // Update the fetch URL to point to your server-side proxy endpoint
-      const serverEndpoint = `https://cv-management-system.onrender.com/v1/resumePDF/downloadFileFromGoogleDrive/${encodeURIComponent(id)}`;
+      const serverEndpoint = `http://localhost:3000/v1/resumePDF/downloadFileFromGoogleDrive/${encodeURIComponent(id)}`;
       const response = await fetch(serverEndpoint);
 
       if (!response.ok) throw new Error('Network response was not ok.');
@@ -93,14 +93,14 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
 
   const handleSyncWithGoogleDrive = async () => {
     const googleSignInWindow = window.open(
-      'https://cv-management-system.onrender.com/v1/resumePDF/auth/google',
+      'http://localhost:3000/v1/resumePDF/auth/google',
       'googleSignIn',
       'width=500,height=600',
     );
 
     const getToken = async () => {
       try {
-        const response = await fetch('https://cv-management-system.onrender.com/v1/resumePDF/google/token', {
+        const response = await fetch('http://localhost:3000/v1/resumePDF/google/token', {
           credentials: 'include',
         });
         const { token } = await response.json();
@@ -143,13 +143,13 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
   const handleOpenPicker = async () => {
     try {
       const googleSignInWindow = window.open(
-        'https://cv-management-system.onrender.com/v1/resumePDF/auth/google',
+        'http://localhost:3000/v1/resumePDF/auth/google',
         'googleSignIn',
         'width=500,height=600',
       );
 
       const getToken = async () => {
-        const response = await fetch('https://cv-management-system.onrender.com/v1/resumePDF/google/token', {
+        const response = await fetch('http://localhost:3000/v1/resumePDF/google/token', {
           credentials: 'include',
         });
         const { token } = await response.json();
