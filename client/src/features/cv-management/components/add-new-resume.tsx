@@ -70,7 +70,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
     setFiles(updatedFiles);
     onFileUrlsChange(updatedFiles.map(file => file.fileUrl));
   };
-
+  //https://cv-management-system.onrender.com/v1
   const downloadFileFromGoogleDrive = async (fileName: string, id: string) => {
     try {
       // Update the fetch URL to point to your server-side proxy endpoint
@@ -123,32 +123,28 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
         'width=500,height=600',
       );
 
-      while (token_response === 'coderpush') {
-        try {
-          const response = await fetch('https://cv-management-system.onrender.com/v1/resumePDF/google/token', {
-            credentials: 'include',
-          });
-          const { token } = await response.json();
+      const getToken = async () => {
+        const response = await fetch('https://cv-management-system.onrender.com/v1/resumePDF/google/token', {
+          credentials: 'include',
+        });
+        const { token } = await response.json();
+        return token;
+      };
 
-          if (token !== null) {
-            googleSignInWindow?.close();
-            token_response = token;
-            break;
-          }
-        } catch (error) {
-          console.log(error);
-        }
+      let token_response;
+      while (!(token_response = await getToken())) {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
       }
 
-      googleSignInWindow?.close();
+      googleSignInWindow.close();
       setIsPickerOpen(true);
-      console.log(isPickerOpen);
       setOpen(false);
+
       openPicker({
         clientId: '579506460829-rojvfppgli45e7h6lvfjbtodsgil1vnd.apps.googleusercontent.com',
         developerKey: 'AIzaSyCgMmU-U93Gjym5NOHs2yGSWbwEe7d_afM',
         viewId: 'DOCS',
-        token: token_response, // Use the dynamically obtained token
+        token: token_response,
         showUploadView: true,
         showUploadFolders: true,
         supportDrives: true,
@@ -156,30 +152,23 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
         callbackFunction: async data => {
           if (data.action === 'cancel') {
             console.log('User clicked cancel/close button');
-            setOpen(true);
           } else if (data.docs) {
-            const selectedFiles = data.docs.map(doc => ({
-              url: doc.url,
-              name: doc.name,
-              mimeType: doc.mimeType,
-              id: doc.id,
+            const selectedFiles = data.docs.map(({ url, name, mimeType, id }) => ({
+              url,
+              name,
+              mimeType,
+              id,
             }));
 
-            setOpen(true);
             console.log(selectedFiles);
 
-            const myArray = [];
+            const myArray = await Promise.all(
+              selectedFiles.map(file => downloadFileFromGoogleDrive(file.name, file.id)),
+            );
 
-            for (let i = 0; i < selectedFiles.length; i++) {
-              const file = await downloadFileFromGoogleDrive(selectedFiles[i].name, selectedFiles[i].id);
-
-              if (file) {
-                myArray.push(file);
-              }
-            }
-
-            setNewFiles(myArray);
+            setNewFiles(myArray.filter(Boolean));
           }
+          setOpen(true);
         },
       });
     } catch (error) {

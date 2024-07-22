@@ -37,7 +37,7 @@ interface EditSkills {
   };
   id: string;
 }
-
+//https://cv-management-system.onrender.com/v1
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://cv-management-system.onrender.com/v1' }),
