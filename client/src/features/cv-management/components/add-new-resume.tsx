@@ -70,6 +70,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
     setFiles(updatedFiles);
     onFileUrlsChange(updatedFiles.map(file => file.fileUrl));
   };
+
   //https://cv-management-system.onrender.com/v1
   const downloadFileFromGoogleDrive = async (fileName: string, id: string) => {
     try {
@@ -85,6 +86,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
       return file;
     } catch (error) {
       console.error('Error downloading file:', error);
+
       return null;
     }
   };
@@ -112,6 +114,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
         console.log(error);
       }
     }
+
     googleSignInWindow?.close();
   };
 
@@ -128,15 +131,16 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
           credentials: 'include',
         });
         const { token } = await response.json();
+
         return token;
       };
 
-      let token_response;
+      // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
       while (!(token_response = await getToken())) {
         await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
       }
 
-      googleSignInWindow.close();
+      googleSignInWindow?.close();
       setIsPickerOpen(true);
       setOpen(false);
 
@@ -144,7 +148,7 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
         clientId: '579506460829-rojvfppgli45e7h6lvfjbtodsgil1vnd.apps.googleusercontent.com',
         developerKey: 'AIzaSyCgMmU-U93Gjym5NOHs2yGSWbwEe7d_afM',
         viewId: 'DOCS',
-        token: token_response,
+        token: token_response, // Use the dynamically obtained token
         showUploadView: true,
         showUploadFolders: true,
         supportDrives: true,
@@ -152,23 +156,30 @@ const ResumeInputZone = ({ onFileUrlsChange, setPdfs, setOpen }: ResumeInputZone
         callbackFunction: async data => {
           if (data.action === 'cancel') {
             console.log('User clicked cancel/close button');
+            setOpen(true);
           } else if (data.docs) {
-            const selectedFiles = data.docs.map(({ url, name, mimeType, id }) => ({
-              url,
-              name,
-              mimeType,
-              id,
+            const selectedFiles = data.docs.map(doc => ({
+              url: doc.url,
+              name: doc.name,
+              mimeType: doc.mimeType,
+              id: doc.id,
             }));
 
+            setOpen(true);
             console.log(selectedFiles);
 
-            const myArray = await Promise.all(
-              selectedFiles.map(file => downloadFileFromGoogleDrive(file.name, file.id)),
-            );
+            const myArray = [];
 
-            setNewFiles(myArray.filter(Boolean));
+            for (let i = 0; i < selectedFiles.length; i++) {
+              const file = await downloadFileFromGoogleDrive(selectedFiles[i].name, selectedFiles[i].id);
+
+              if (file) {
+                myArray.push(file);
+              }
+            }
+
+            setNewFiles(myArray);
           }
-          setOpen(true);
         },
       });
     } catch (error) {
@@ -253,6 +264,7 @@ export const AddNewResume = () => {
               jsonData: jsonData[i],
             }).unwrap();
           }
+
           await uploadFile({ pdf: pdfs[i], jsonData: jsonData[i] }).unwrap();
         }
       } catch (err) {
