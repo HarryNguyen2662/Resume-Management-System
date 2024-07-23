@@ -30,9 +30,12 @@ router.route('/google/redirect').get(async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
     console.log(tokens);
-    req.session.tokens = tokens;
+    //req.session.tokens = tokens;
     console.log(req.session.tokens);
-    res.send(tokens);
+    process.env.GOOGLE_ACCESS_TOKEN = tokens.access_token;
+    process.env.GOOGLE_REFRESH_TOKEN = tokens.refresh_token;
+    process.env.GOOGLE_TOKEN_EXPIRY = tokens.expiry_date;
+    res.status(200).send('Authentication successful');
   } catch (error) {
     console.error('Error retrieving access token', error);
     res.status(500).send('Authentication failed');
@@ -40,8 +43,8 @@ router.route('/google/redirect').get(async (req, res) => {
 });
 
 router.route('/google/token').get(async (req, res) => {
-  if (req.session.tokens) {
-    res.json({ token: req.session.tokens.access_token });
+  if (process.env.GOOGLE_ACCESS_TOKEN) {
+    res.json({ token: process.env.GOOGLE_ACCESS_TOKEN });
   } else {
     res.status(401).json({ error: 'No authentication tokens found' });
   }
