@@ -7,7 +7,6 @@ import { DEFAULT_FONT_COLOR } from 'lib/redux/settingsSlice';
 import { spacing, styles } from '../styles';
 
 export const ResumePDFSection = ({
-  themeColor,
   heading,
   style = {},
   children,
@@ -27,21 +26,12 @@ export const ResumePDFSection = ({
   >
     {heading && (
       <View style={{ ...styles.flexRow, alignItems: 'center' }}>
-        {themeColor && (
-          <View
-            style={{
-              height: '3.75pt',
-              width: '30pt',
-              backgroundColor: themeColor,
-              marginRight: spacing['3.5'],
-            }}
-            debug={DEBUG_RESUME_PDF_FLAG}
-          />
-        )}
         <Text
           style={{
-            fontWeight: 'bold',
+            fontWeight: 'normal',
+            color: '#0362a6',
             letterSpacing: '0.3pt', // tracking-wide -> 0.025em * 12 pt = 0.3pt
+            fontSize: '14pt',
           }}
           debug={DEBUG_RESUME_PDF_FLAG}
         >

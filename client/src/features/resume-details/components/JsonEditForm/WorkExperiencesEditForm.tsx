@@ -23,7 +23,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
 import { useUpdateWorkExperiencesByIdMutation } from '@/services/apiSlice';
 
-type WorkField = 'company' | 'jobTitle' | 'date' | 'descriptions';
+type WorkField = 'company' | 'jobTitle' | 'date' | 'descriptions' | 'location';
 
 interface formFieldType {
   field: WorkField;
@@ -34,6 +34,7 @@ const formFields: formFieldType[] = [
   { field: 'company', label: 'Company' },
   { field: 'jobTitle', label: 'Job Title' },
   { field: 'date', label: 'Date' },
+  { field: 'location', label: 'Location' },
 ];
 
 // const validationSchema = Yup.object({
@@ -94,7 +95,6 @@ const WorkExperiencesEditForm = ({ workExperiences }: { workExperiences: ResumeW
                     className: 'bg-green-200',
                   });
                 } catch (err) {
-                  console.error('Failed to update work experiences: ', err);
                   toast({
                     title: 'Failed!',
                     description: 'Failed to update work experiences.',

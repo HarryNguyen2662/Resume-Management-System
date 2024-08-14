@@ -29,10 +29,12 @@ const formSchema = z.object({
   url: z.string(),
   summary: z.string(),
   location: z.string(),
+  role: z.string(),
+  languages: z.string(),
 });
 
 interface formFieldType {
-  field: 'name' | 'email' | 'phone' | 'url' | 'summary' | 'location';
+  field: 'name' | 'email' | 'phone' | 'url' | 'summary' | 'location' | 'role' | 'languages';
   label: string;
 }
 
@@ -43,6 +45,8 @@ const formFields: formFieldType[] = [
   { field: 'url', label: 'Url' },
   { field: 'summary', label: 'Summary' },
   { field: 'location', label: 'Location' },
+  { field: 'role', label: 'Role' },
+  { field: 'languages', label: 'Languages' },
 ];
 
 const ProfileEditForm = ({ profile }: { profile: ResumeProfile }) => {
@@ -61,6 +65,8 @@ const ProfileEditForm = ({ profile }: { profile: ResumeProfile }) => {
       url: profile.url ? profile.url : '',
       summary: profile.summary ? profile.summary : '',
       location: profile.location ? profile.location : '',
+      role: profile.role ? profile.role : '',
+      languages: profile.languages ? profile.languages : '',
     },
   });
 
@@ -74,7 +80,6 @@ const ProfileEditForm = ({ profile }: { profile: ResumeProfile }) => {
           className: 'bg-green-200',
         });
       } catch (err) {
-        console.error('Failed to update profile: ', err);
         toast({
           title: 'Failed!',
           description: 'Failed to update profile.',
