@@ -1,9 +1,10 @@
 import type { Settings, ShowForm } from 'lib/redux/settingsSlice';
 import type { Resume } from 'lib/redux/types';
 
-import { Document,Page, View } from '@react-pdf/renderer';
+import { Document, Image,Page, View } from '@react-pdf/renderer';
 import { DEFAULT_FONT_COLOR } from 'lib/redux/settingsSlice';
 
+import logo from '../../../../assets/CV_Logo.png';
 import { SuppressResumePDFErrorMessage } from './common/SuppressResumePDFErrorMessage';
 import { ResumePDFCustom } from './ResumePDFCustom';
 import { ResumePDFEducation } from './ResumePDFEducation';
@@ -11,7 +12,7 @@ import { ResumePDFProfile } from './ResumePDFProfile';
 import { ResumePDFProject } from './ResumePDFProject';
 import { ResumePDFSkills } from './ResumePDFSkills';
 import { ResumePDFWorkExperience } from './ResumePDFWorkExperience';
-import { spacing,styles } from './styles';
+import { spacing, styles } from './styles';
 
 /**
  * Note: ResumePDF is supposed to be rendered inside PDFViewer. However,
@@ -37,23 +38,22 @@ export const ResumePDF = ({
   settings: Settings;
   isPDF?: boolean;
 }) => {
-  const { profile, workExperiences, educations, projects, skills, custom } =
-    resume;
+  const { profile, workExperiences, educations, projects, skills, custom } = resume;
   const { name } = profile;
-  const {
-    fontFamily,
-    fontSize,
-    documentSize,
-    formToHeading,
-    formToShow,
-    formsOrder,
-    showBulletPoints,
-  } = settings;
+  const { fontFamily, fontSize, documentSize, formToHeading, formToShow, formsOrder, showBulletPoints } = settings;
   const themeColor = settings.themeColor || DEFAULT_FONT_COLOR;
 
-  const showFormsOrder = formsOrder.filter((form) => formToShow[form]);
+  const showFormsOrder = formsOrder.filter(form => formToShow[form]);
 
   const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
+    skills: () => (
+      <ResumePDFSkills
+        heading={formToHeading['skills']}
+        skills={skills}
+        themeColor={themeColor}
+        showBulletPoints={showBulletPoints['skills']}
+      />
+    ),
     workExperiences: () => (
       <ResumePDFWorkExperience
         heading={formToHeading['workExperiences']}
@@ -61,27 +61,15 @@ export const ResumePDF = ({
         themeColor={themeColor}
       />
     ),
+    projects: () => (
+      <ResumePDFProject heading={formToHeading['projects']} projects={projects} themeColor={themeColor} />
+    ),
     educations: () => (
       <ResumePDFEducation
         heading={formToHeading['educations']}
         educations={educations}
         themeColor={themeColor}
         showBulletPoints={showBulletPoints['educations']}
-      />
-    ),
-    projects: () => (
-      <ResumePDFProject
-        heading={formToHeading['projects']}
-        projects={projects}
-        themeColor={themeColor}
-      />
-    ),
-    skills: () => (
-      <ResumePDFSkills
-        heading={formToHeading['skills']}
-        skills={skills}
-        themeColor={themeColor}
-        showBulletPoints={showBulletPoints['skills']}
       />
     ),
     custom: () => (
@@ -106,29 +94,16 @@ export const ResumePDF = ({
             fontSize: fontSize + 'pt',
           }}
         >
-          {Boolean(settings.themeColor) && (
-            <View
-              style={{
-                width: spacing['full'],
-                height: spacing[3.5],
-                backgroundColor: themeColor,
-              }}
-            />
-          )}
           <View
             style={{
               ...styles.flexCol,
               padding: `${spacing[0]} ${spacing[20]}`,
             }}
           >
-            <ResumePDFProfile
-              profile={profile}
-              themeColor={themeColor}
-              isPDF={isPDF}
-            />
-            {showFormsOrder.map((form) => {
+            <Image src={logo} style={{ width: 130, marginHorizontal: 'auto', marginTop: 5 }} />
+            <ResumePDFProfile profile={profile} themeColor={themeColor} isPDF={isPDF} />
+            {showFormsOrder.map(form => {
               const Component = formTypeToComponent[form];
-
 
               return <Component key={form} />;
             })}

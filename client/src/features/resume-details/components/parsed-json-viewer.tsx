@@ -81,6 +81,8 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
           <TableRow label="Location" value={resume.profile.location} />
           <TableRow label="Link" value={resume.profile.url} />
           <TableRow label="Summary" value={resume.profile.summary} />
+          <TableRow label="Summary" value={resume.profile.role} />
+          <TableRow label="Summary" value={resume.profile.languages} />
         </div>
         <div className="bg-white-100 shadow-lg rounded-lg p-4 mb-6">
           <TableRowHeader>
@@ -120,6 +122,7 @@ export const ParsedJsonViewer = ({ resume }: { resume: Resume }) => {
                 value={workExperience.descriptions}
                 className={workExperiences.length - 1 !== 0 && idx !== workExperiences.length - 1 && '!border-b-4'}
               />
+              <TableRow label="Location" value={workExperience.location} />
             </Fragment>
           ))}
         </div>

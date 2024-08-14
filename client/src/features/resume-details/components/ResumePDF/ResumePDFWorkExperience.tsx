@@ -2,12 +2,8 @@ import type { ResumeWorkExperience } from 'lib/redux/types';
 
 import { View } from '@react-pdf/renderer';
 
-import {
-  ResumePDFBulletList,
-  ResumePDFSection,
-  ResumePDFText,
-} from './common';
-import { spacing,styles } from './styles';
+import { ResumePDFBulletList, ResumePDFSection, ResumePDFText } from './common';
+import { spacing, styles } from './styles';
 
 export const ResumePDFWorkExperience = ({
   heading,
@@ -20,27 +16,22 @@ export const ResumePDFWorkExperience = ({
 }) => {
   return (
     <ResumePDFSection themeColor={themeColor} heading={heading}>
-      {workExperiences.map(({ company, jobTitle, date, descriptions }, idx) => {
+      {workExperiences.map(({ company, jobTitle, date, descriptions, location }, idx) => {
         // Hide company name if it is the same as the previous company
-        const hideCompanyName =
-          idx > 0 && company === workExperiences[idx - 1].company;
+        const hideCompanyName = idx > 0 && company === workExperiences[idx - 1].company;
 
         return (
           <View key={idx} style={idx !== 0 ? { marginTop: spacing['2'] } : {}}>
             {!hideCompanyName && (
-              <ResumePDFText bold={true}>{company}</ResumePDFText>
+              <View style={{ ...styles.flexRow, alignItems: 'center', gap: '5px', fontSize: 12 }}>
+                <ResumePDFText bold={true}>{company},</ResumePDFText>
+                <ResumePDFText>{location} —</ResumePDFText>
+                <ResumePDFText>{jobTitle}</ResumePDFText>
+              </View>
             )}
-            <View
-              style={{
-                ...styles.flexRowBetween,
-                marginTop: hideCompanyName
-                  ? '-' + spacing['1']
-                  : spacing['1.5'],
-              }}
-            >
-              <ResumePDFText>{jobTitle}</ResumePDFText>
-              <ResumePDFText>{date}</ResumePDFText>
-            </View>
+
+            <ResumePDFText style={{ fontSize: 10, marginVertical: 3 }}>{date}</ResumePDFText>
+
             <View style={{ ...styles.flexCol, marginTop: spacing['1.5'] }}>
               <ResumePDFBulletList items={descriptions} />
             </View>

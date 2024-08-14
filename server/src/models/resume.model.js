@@ -19,6 +19,8 @@ const resumeSchema = mongoose.Schema(
       phone: String,
       summmary: String,
       url: String,
+      role: String,
+      languages: String,
     },
     educations: [
       {
@@ -32,8 +34,9 @@ const resumeSchema = mongoose.Schema(
     workExperiences: [
       {
         company: { type: String },
-        data: { type: String },
+        date: { type: String },
         jobTitle: { type: String },
+        location: { type: String },
         descriptions: [{ type: String, trim: true }],
       },
     ],

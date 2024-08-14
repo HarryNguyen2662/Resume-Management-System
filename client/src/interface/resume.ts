@@ -5,12 +5,15 @@ export interface ResumeProfile {
   url: string;
   summary: string;
   location: string;
+  role: string;
+  languages: string;
 }
 
 export interface ResumeWorkExperience {
   company: string;
   jobTitle: string;
   date: string;
+  location: string;
   descriptions: string[];
 }
 
