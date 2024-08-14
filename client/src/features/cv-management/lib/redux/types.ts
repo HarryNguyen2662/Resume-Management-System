@@ -4,16 +4,16 @@ export interface ResumeProfile {
   phone: string;
   url: string;
   summary: string;
-  location: string;
-  role: string;
-  languages: string;
+  location?: string;
+  role?: string;
+  languages?: string;
 }
 
 export interface ResumeWorkExperience {
   company: string;
   jobTitle: string;
   date: string;
-  location: string;
+  location?: string;
   descriptions: string[];
 }
 
