@@ -64,6 +64,22 @@ const getResumes = catchAsync(async (req, res) => {
   res.send(resumes);
 });
 
+const sendResumeToGrowHire = catchAsync(async (req, res) => {
+  const resumeId = req.params.resumeId;
+  const { cookieString, jobId } = req.body; 
+
+  try {
+    const result = await resumeService.sendResumeToGrowHire(resumeId, cookieString, jobId);
+    res.status(httpStatus.OK).send({
+      message: 'Resume sent successfully to GrowHire.',
+      result,
+    });
+  } catch (error) {
+    console.error('Error sending resume to GrowHire:', error);
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to send resume to GrowHire.');
+  }
+});
+
 module.exports = {
   createResume,
   getResumeAll,
@@ -71,4 +87,5 @@ module.exports = {
   deleteResume,
   updateResumeById,
   getResumes,
+  sendResumeToGrowHire,
 };

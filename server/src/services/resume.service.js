@@ -2,8 +2,8 @@
 
 const httpStatus = require('http-status');
 const { Resume } = require('../models');
+
 const ApiError = require('../utils/ApiError');
-const http = require('node:https');
 const uploadToCloudinary = require('../utils/cloudinary-upload');
 const DeleteOnCloudinary = require('../utils/cloudinary-delete');
 
@@ -25,6 +25,7 @@ const createResume = async (req) => {
 
     const newResume = await Resume.create({ ...parsedJSON, resumePdf });
 
+    console.log(newResume);
     return newResume;
   } catch (error) {
     console.error('Error uploading file to server:', error);
@@ -140,6 +141,73 @@ const getResumes = async (options, keywords) => {
   };
 };
 
+/**
+ * Send a resume to the GrowHire API
+ * @param {ObjectId} resumeId - The ID of the resume to send
+ * @param {cookieString}
+ * @param {jobId}
+ * @returns {Promise<Object>} - Response from the GrowHire API
+ */
+const sendResumeToGrowHire = async (resumeId, cookieString, jobId) => {
+  const resume = await Resume.findById(resumeId);
+  if (!resume) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Resume not found');
+  }
+  console.log(cookieString, jobId);
+  const firstName = resume.profile.name.split(" ")[0]; 
+  const lastName = resume.profile.name.split(" ").slice(-1)[0]; 
+  
+  try {
+    // Prepare form data for the API request
+    const form = new FormData();
+    form.append('firstName', firstName || 'N/A');
+    form.append('lastName', lastName || 'N/A');
+    form.append('email', resume.profile.email || 'N/A');
+    form.append('phoneNumber', resume.profile.phone || 'N/A');
+    form.append(
+      'socialLinks',
+      JSON.stringify([
+        {
+          type: 'url',
+          url: resume.resumePdf?.fileUrl || '',
+        },
+      ])
+    );
+    form.append('customFields', JSON.stringify([]));
+    form.append('jobId', jobId);
+
+    form.append('resumeFile', undefined);
+
+    console.log(form);
+    const response = await fetch(
+      'https://dash.growhire.com/api/candidate/create?_data=routes%2Fapi.candidate.create',
+      {
+        method: 'POST',
+        headers: {
+          Origin: 'https://dash.growhire.com',
+          Referer:
+            'https://dash.growhire.com/app/jobs/',
+          Cookie: cookieString,
+        },
+        body: form,
+      }
+    );
+    console.log(`Response Status: ${response.status} - ${response.statusText}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to send resume: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('Resume sent successfully:', result);
+
+    return result;
+  } catch (error) {
+    console.error('Error sending resume to GrowHire:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   createResume,
   getResumeById,
@@ -147,4 +215,5 @@ module.exports = {
   getResumeAll,
   updateResumeById,
   getResumes,
+  sendResumeToGrowHire
 };
